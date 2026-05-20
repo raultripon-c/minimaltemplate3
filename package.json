@@ -1,0 +1,10 @@
+{
+  "name": "career-platform-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8081",
+    "check": "node --check scripts/app.js && node --check components/common.js && node --check widgets/home-widgets.js && node --check pages/page-modules.js"
+  }
+}
