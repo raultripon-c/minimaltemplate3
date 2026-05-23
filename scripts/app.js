@@ -47,18 +47,16 @@ function render() {
 
 function bindInteractions() {
   const toggle = document.querySelector(".menu-toggle");
+  const mobileDrawer = document.querySelector("#mobile-drawer");
   toggle?.addEventListener("click", () => {
     const isOpen = document.body.classList.toggle("drawer-open");
     toggle.setAttribute("aria-expanded", String(isOpen));
+    if (mobileDrawer) mobileDrawer.hidden = !isOpen;
   });
 
-  document.querySelectorAll(".accordion__button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const item = button.closest(".accordion__item");
-      const isOpen = item.classList.toggle("is-open");
-      button.setAttribute("aria-expanded", String(isOpen));
-    });
-  });
+  bindHeaderMenus();
+  bindAccordions();
+  bindSearchSidebar();
 
   document.querySelectorAll("[data-community-form]").forEach((form) => {
     form.addEventListener("submit", (event) => {
@@ -80,6 +78,7 @@ function bindInteractions() {
       button.setAttribute("aria-pressed", String(current.has(id)));
       button.classList.toggle("is-active", current.has(id));
       button.textContent = current.has(id) ? "♥" : "♡";
+      updateSavedJobLinks();
     });
   });
 
@@ -98,7 +97,159 @@ function bindInteractions() {
 
   bindTabs();
   bindFilters();
+  bindStoryCarousels();
+  bindGrowthTabs();
   renderSavedJobs();
+  updateSavedJobLinks();
+}
+
+function bindHeaderMenus() {
+  const dropdownTriggers = [...document.querySelectorAll("[data-dropdown-trigger]")];
+  const mobileTrigger = document.querySelector("[data-mobile-submenu-trigger]");
+  const mobileDrawer = document.querySelector("#mobile-drawer");
+  const menuToggle = document.querySelector(".menu-toggle");
+
+  const closeDropdowns = () => {
+    dropdownTriggers.forEach((trigger) => {
+      const menu = document.querySelector(`[data-dropdown-menu="${trigger.dataset.dropdownTrigger}"]`);
+      trigger.setAttribute("aria-expanded", "false");
+      if (menu) menu.hidden = true;
+    });
+  };
+
+  const closeMobileDrawer = () => {
+    document.body.classList.remove("drawer-open");
+    menuToggle?.setAttribute("aria-expanded", "false");
+    if (mobileDrawer) mobileDrawer.hidden = true;
+  };
+
+  dropdownTriggers.forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const menu = document.querySelector(`[data-dropdown-menu="${trigger.dataset.dropdownTrigger}"]`);
+      const willOpen = trigger.getAttribute("aria-expanded") !== "true";
+      closeDropdowns();
+      trigger.setAttribute("aria-expanded", String(willOpen));
+      if (menu) menu.hidden = !willOpen;
+    });
+  });
+
+  mobileTrigger?.addEventListener("click", () => {
+    const target = document.querySelector(`#${mobileTrigger.getAttribute("aria-controls")}`);
+    const willOpen = mobileTrigger.getAttribute("aria-expanded") !== "true";
+    mobileTrigger.setAttribute("aria-expanded", String(willOpen));
+    if (target) target.hidden = !willOpen;
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".nav-menu") && !event.target.closest(".utility-menu")) closeDropdowns();
+    if (document.body.classList.contains("drawer-open") && !event.target.closest(".mobile-drawer") && !event.target.closest(".menu-toggle")) {
+      closeMobileDrawer();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeDropdowns();
+      closeMobileDrawer();
+    }
+  });
+
+  document.querySelectorAll(".mobile-drawer a, .mobile-drawer .btn").forEach((control) => control.addEventListener("click", closeMobileDrawer));
+  document.querySelectorAll("#language-menu button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const label = button.closest(".utility-menu")?.querySelector("[data-dropdown-trigger='language'] span:nth-child(2)");
+      if (label) label.textContent = button.lang.toUpperCase();
+      closeDropdowns();
+    });
+  });
+
+  document.querySelectorAll(".mobile-language button").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".mobile-language button").forEach((item) => {
+        item.classList.toggle("is-active", item === button);
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+    });
+  });
+}
+
+function bindSearchSidebar() {
+  document.querySelectorAll("[data-filter-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const group = button.closest(".filter-group");
+      const panel = document.querySelector(`#${button.getAttribute("aria-controls")}`);
+      const willOpen = button.getAttribute("aria-expanded") !== "true";
+      const icon = button.querySelector("span:last-child");
+
+      group?.classList.toggle("is-open", willOpen);
+      button.setAttribute("aria-expanded", String(willOpen));
+      if (panel) panel.hidden = !willOpen;
+      if (icon) icon.textContent = willOpen ? "x" : "+";
+    });
+  });
+
+  document.querySelectorAll(".search-alert-card__toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const isActive = button.getAttribute("aria-pressed") === "true";
+      button.setAttribute("aria-pressed", String(!isActive));
+      button.setAttribute("aria-label", isActive ? "Turn search alert on" : "Turn search alert off");
+    });
+  });
+}
+
+function bindAccordions() {
+  document.querySelectorAll("[data-accordion]").forEach((accordion) => {
+    const items = [...accordion.querySelectorAll(".accordion__item")];
+
+    const syncItem = (item, open) => {
+      const button = item.querySelector(".accordion__button");
+      const panel = item.querySelector(".accordion__panel");
+      const icon = item.querySelector(".accordion__icon");
+
+      item.classList.toggle("is-open", open);
+      button?.setAttribute("aria-expanded", String(open));
+      panel?.setAttribute("aria-hidden", String(!open));
+      if (panel) panel.style.maxHeight = open ? `${panel.scrollHeight}px` : "0px";
+      if (icon) icon.textContent = open ? "x" : "+";
+    };
+
+    const reserveAccordionHeight = () => {
+      const currentState = items.map((item) => item.classList.contains("is-open"));
+      let maxHeight = 0;
+
+      accordion.classList.add("is-measuring");
+      items.forEach((itemToOpen) => {
+        items.forEach((item) => syncItem(item, item === itemToOpen));
+        maxHeight = Math.max(maxHeight, accordion.offsetHeight);
+      });
+      items.forEach((item) => syncItem(item, false));
+      maxHeight = Math.max(maxHeight, accordion.offsetHeight);
+      items.forEach((item, index) => syncItem(item, currentState[index]));
+      accordion.classList.remove("is-measuring");
+      accordion.style.minHeight = `${Math.ceil(maxHeight)}px`;
+    };
+
+    reserveAccordionHeight();
+
+    items.forEach((item) => {
+      const button = item.querySelector(".accordion__button");
+      button?.addEventListener("click", () => {
+        const shouldOpen = !item.classList.contains("is-open");
+        items.forEach((currentItem) => syncItem(currentItem, shouldOpen && currentItem === item));
+      });
+    });
+  });
+}
+
+function updateSavedJobLinks() {
+  const savedIds = JSON.parse(localStorage.getItem("career-template-saved") || "[]");
+  const count = savedIds.length;
+  const label = count > 0 ? `♡ Saved Jobs (${count})` : "♡ Saved Jobs";
+  const compact = count > 0 ? `Saved <span class="utility-count">${count}</span>` : "Saved Jobs";
+  document.querySelectorAll("[data-saved-link]").forEach((link) => {
+    link.innerHTML = link.hasAttribute("data-saved-mobile") ? compact : label;
+  });
 }
 
 function bindTabs() {
@@ -108,8 +259,9 @@ function bindTabs() {
       group.querySelectorAll(".tab").forEach((item) => item.setAttribute("aria-selected", "false"));
       tab.setAttribute("aria-selected", "true");
       const value = tab.dataset.tabFilter;
-      document.querySelectorAll("[data-job-card]").forEach((card) => {
-        const visible = value === "Featured" || card.textContent.includes(value) || card.dataset.schedule === value;
+      const scope = tab.closest("[data-filter-scope]") || document;
+      scope.querySelectorAll("[data-job-card]").forEach((card) => {
+        const visible = value === "All" || value === "Featured" || card.textContent.includes(value) || card.dataset.schedule === value;
         card.hidden = !visible;
       });
     });
@@ -138,7 +290,7 @@ function bindFilters() {
     });
 
     const countEl = document.querySelector("[data-result-count]");
-    if (countEl) countEl.textContent = `${count} role${count === 1 ? "" : "s"} matched`;
+    if (countEl) countEl.textContent = String(count);
   };
 
   searchInput?.addEventListener("input", apply);
@@ -147,6 +299,64 @@ function bindFilters() {
     checks.forEach((check) => (check.checked = false));
     if (searchInput) searchInput.value = "";
     apply();
+  });
+}
+
+function bindStoryCarousels() {
+  document.querySelectorAll("[data-story-carousel]").forEach((carousel) => {
+    const slides = [...carousel.querySelectorAll("[data-story-slide]")];
+    const prev = carousel.querySelector("[data-story-prev]");
+    const next = carousel.querySelector("[data-story-next]");
+    const status = carousel.querySelector("[data-story-status]");
+    let active = slides.findIndex((slide) => !slide.hidden);
+    if (active < 0) active = 0;
+
+    const showSlide = (index) => {
+      if (!slides.length) return;
+      active = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        slide.hidden = slideIndex !== active;
+      });
+      if (status) status.textContent = `${active + 1} / ${slides.length}`;
+    };
+
+    prev?.addEventListener("click", () => showSlide(active - 1));
+    next?.addEventListener("click", () => showSlide(active + 1));
+    showSlide(active);
+  });
+}
+
+function bindGrowthTabs() {
+  document.querySelectorAll("[data-growth-tabs]").forEach((tabs) => {
+    const triggers = [...tabs.querySelectorAll("[data-growth-tab]")];
+    const panels = [...tabs.querySelectorAll("[data-growth-panel]")];
+
+    const activate = (index) => {
+      triggers.forEach((trigger) => {
+        const isActive = trigger.dataset.growthTab === String(index);
+        trigger.setAttribute("aria-selected", String(isActive));
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.growthPanel !== String(index);
+      });
+    };
+
+    triggers.forEach((trigger, triggerIndex) => {
+      trigger.addEventListener("click", () => activate(trigger.dataset.growthTab));
+      trigger.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? triggers.length - 1
+            : event.key === "ArrowRight"
+              ? (triggerIndex + 1) % triggers.length
+              : (triggerIndex - 1 + triggers.length) % triggers.length;
+        triggers[nextIndex]?.focus();
+        activate(triggers[nextIndex]?.dataset.growthTab);
+      });
+    });
   });
 }
 

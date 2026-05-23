@@ -1,5 +1,27 @@
 import { benefits, careerAreas, events, evpPillars, jobs, locations, pathways, stories } from "../data/site-data.js";
-import { accordion, badge, button, jobCard, jobsList, sectionHeader, simpleCard } from "../components/common.js";
+import { badge, button, jobCard, jobsList, sectionHeader, simpleCard } from "../components/common.js";
+
+const asset = (file) => `${window.location.pathname.includes("/pages/") ? "../" : ""}assets/illustrations/${file}`;
+const pageHref = (file) => `${window.location.pathname.includes("/pages/") ? "" : "pages/"}${file}`;
+const svgIcon = (paths) => `<svg viewBox="0 0 48 48" aria-hidden="true">${paths}</svg>`;
+
+const contentIcons = {
+  frontline: svgIcon(`<path d="M16 33c0-6 16-6 16 0"/><circle cx="24" cy="18" r="6"/><path d="M9 35c1-5 5-8 10-8M39 35c-1-5-5-8-10-8"/>`),
+  corporate: svgIcon(`<path d="M15 17h18v19H15V17Z"/><path d="M20 17v-5h8v5M15 24h18M21 29h2M25 29h2"/>`),
+  technology: svgIcon(`<path d="m18 16-7 8 7 8M30 16l7 8-7 8M27 13l-6 22"/>`),
+  healthcare: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 10-11 21-11 21S13 29 13 19c0-6 5-11 11-11Z"/><path d="M24 15v10M19 20h10"/>`),
+  operations: svgIcon(`<path d="M10 18h12l4 6h12M10 30h10l4-6h14"/><path d="m34 15 4 3-4 3M34 27l4 3-4 3"/>`),
+  leadership: svgIcon(`<path d="M12 34c0-7 10-7 10 0M26 34c0-7 10-7 10 0"/><circle cx="17" cy="19" r="5"/><circle cx="31" cy="19" r="5"/><path d="M24 9v8M20 13h8"/>`),
+  early: svgIcon(`<path d="M12 14h16c4 0 8 3 8 7v13H18c-3 0-6-3-6-6V14Z"/><path d="M18 20h12M18 26h10M36 21l3-3 3 3"/>`),
+  support: svgIcon(`<path d="M12 13h24v16H22l-7 6v-6h-3V13Z"/><path d="M18 20h12M18 25h8"/>`),
+  growth: svgIcon(`<path d="M11 34h26M15 30l7-7 5 5 9-12"/><path d="M31 16h5v5"/>`),
+  purpose: svgIcon(`<path d="M24 8v32M12 15h24l-4 7 4 7H12"/>`),
+  flexibility: svgIcon(`<path d="M11 24c5-8 12-8 17 0 3 5 6 5 9 0"/><path d="M13 32h22M18 14v20"/>`),
+  stability: svgIcon(`<path d="M24 8 11 15v10c0 8 5 13 13 16 8-3 13-8 13-16V15L24 8Z"/><path d="m18 25 4 4 9-10"/>`),
+  wellbeing: svgIcon(`<path d="M24 38s-12-7-12-17a7 7 0 0 1 12-5 7 7 0 0 1 12 5c0 10-12 17-12 17Z"/><path d="M17 25h5l2-5 3 9 2-4h4"/>`),
+  belonging: svgIcon(`<circle cx="24" cy="16" r="6"/><path d="M13 37c2-8 20-8 22 0"/><path d="M9 27c2-4 5-6 9-6M39 27c-2-4-5-6-9-6"/>`),
+  location: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 9-11 21-11 21S13 28 13 19c0-6 5-11 11-11Z"/><circle cx="24" cy="19" r="4"/>`)
+};
 
 export function heroSearchWidget() {
   return `
@@ -7,27 +29,19 @@ export function heroSearchWidget() {
       <div class="container hero__grid">
         <div>
           <p class="eyebrow">Find Work That Feels Possible</p>
-          <h1 class="phw-g-h1-primary">Build a career where your next step is clear, supported, and worth it.</h1>
-          <p class="hero__copy">Explore roles, teams, schedules, and growth paths with enough detail to decide whether this is a place for someone like you.</p>
-          <div class="hero__proof" aria-label="Candidate trust signals">
-            ${["Clear hiring process", "Growth pathways", "Flexible role options", "People-first teams"].map((item) => `<span class="proof-chip">${item}</span>`).join("")}
-          </div>
+          <h1 class="phw-g-h1-primary">Find your next role with us.</h1>
+          <p class="hero__copy">Search roles, explore teams, and see the support around the work.</p>
           <form class="smart-search" action="pages/search-results.html" aria-label="Job search">
             <div class="smart-search__grid">
               <div class="field"><label for="hero-keyword">Keyword</label><input id="hero-keyword" name="q" type="search" placeholder="Role, skill, or team"></div>
               <div class="field"><label for="hero-location">Location</label><input id="hero-location" name="location" type="search" placeholder="Region, remote, or hybrid"></div>
-              <div class="field"><label for="hero-category">Career Area</label><select id="hero-category" name="category"><option>Any career area</option><option>Frontline</option><option>Technology</option><option>Healthcare</option><option>Operations</option></select></div>
               <button class="btn btn--primary" type="submit">Search Jobs</button>
             </div>
           </form>
         </div>
-        <aside class="hero-card" aria-label="Employer brand preview">
+        <aside class="hero-card" aria-label="Team collaboration image">
           <div class="hero-card__visual">
-            <p class="eyebrow">Inside The Experience</p>
-            <div class="people-stack">
-              <div class="person-tile"><strong>Mentorship</strong><br>First-month coaching and manager check-ins.</div>
-              <div class="person-tile"><strong>Belonging</strong><br>Teams explain routines before you apply.</div>
-            </div>
+            <img src="${asset("career-hero-teamwork.png")}" alt="Coworkers collaborating in a bright modern office">
           </div>
         </aside>
       </div>
@@ -36,30 +50,51 @@ export function heroSearchWidget() {
 }
 
 export function candidatePathwaysWidget() {
+  const pathwayIcons = [
+    contentIcons.frontline,
+    contentIcons.corporate,
+    contentIcons.technology,
+    contentIcons.healthcare,
+    contentIcons.operations,
+    contentIcons.leadership,
+    contentIcons.early,
+    contentIcons.support
+  ];
   return `
     <section class="section">
       <div class="container">
-        ${sectionHeader("Candidate Pathways", "Start where you see yourself.", "Role families are written for fast self-identification, not internal org charts.")}
-        <div class="grid grid--4">${pathways.map((item, i) => simpleCard(item, ["F", "C", "T", "H", "O", "L", "S", "R"][i])).join("")}</div>
+        ${sectionHeader("Candidate Pathways", "Start where you see yourself.")}
+        <div class="grid grid--4 airy-grid">${pathways.map(([title, copy, cta], i) => simpleCard([title, copy, "", cta], pathwayIcons[i])).join("")}</div>
       </div>
     </section>
   `;
 }
 
 export function featuredJobsWidget() {
-  const tabs = ["Featured", "Recently Added", "Remote", "Full-Time", "Part-Time", "Urgent Hiring"];
+  const tabs = ["All", "Nearby Jobs", "Recently Viewed", "New Opportunities"];
+  const recommendationTags = [
+    ["Nearby Jobs"],
+    ["Recently Viewed", "New Opportunities"],
+    ["New Opportunities"],
+    ["Nearby Jobs"]
+  ];
+  const recommendations = jobs.slice(0, 4).map((job, index) => ({
+    ...job,
+    tags: [...recommendationTags[index], ...job.tags]
+  }));
+
   return `
-    <section class="section section--soft" id="featured-jobs">
+    <section class="section section--soft" id="job-recommendations">
       <div class="container feature-layout">
         <div>
-          <p class="eyebrow">Fast Job Discovery</p>
-          <h2 class="phw-g-h2-dark">Compare promising roles without losing momentum.</h2>
-          <p class="section-lede">Each card shows schedule, location, compensation placeholders, and trust cues before the candidate commits to a detail page.</p>
+          <p class="eyebrow">Job Recommendations For You</p>
+          <h2 class="phw-g-h2-dark">Start with roles that fit.</h2>
+          <p class="section-lede">Revisit relevant roles, spot nearby options, and catch new opportunities quickly.</p>
           ${button("View all jobs", "pages/search-results.html", "primary")}
         </div>
-        <div>
-          <div class="tabs" role="tablist" aria-label="Featured job categories">${tabs.map((tab, index) => `<button class="tab" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" data-tab-filter="${tab}">${tab}</button>`).join("")}</div>
-          ${jobsList(jobs.slice(0, 4))}
+        <div data-filter-scope>
+          <div class="tabs" role="tablist" aria-label="Job recommendation filters">${tabs.map((tab, index) => `<button class="tab" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" data-tab-filter="${tab}">${tab}</button>`).join("")}</div>
+          ${jobsList(recommendations)}
         </div>
       </div>
     </section>
@@ -67,15 +102,24 @@ export function featuredJobsWidget() {
 }
 
 export function evpWidget() {
+  const features = evpPillars.slice(0, 6);
+  const evpIcons = [contentIcons.growth, contentIcons.purpose, contentIcons.flexibility, contentIcons.stability, contentIcons.wellbeing, contentIcons.belonging];
   return `
     <section class="section section--inverse">
-      <div class="container">
-        ${sectionHeader("Why Work Here", "Support you can actually evaluate.", "Proof near conversion reduces anxiety: candidates see what support, growth, and wellbeing mean before applying.")}
-        <div class="grid grid--3">${evpPillars.map((item, i) => simpleCard(item, ["↗", "◎", "⏱", "◆", "✦", "♥", "∴", "✓", "＋"][i])).join("")}</div>
-        <div class="metric-row">
-          <div class="metric"><strong>30</strong><span>day onboarding clarity</span></div>
-          <div class="metric"><strong>4</strong><span>growth conversations per year</span></div>
-          <div class="metric"><strong>1</strong><span>candidate-friendly apply path</span></div>
+      <div class="container evp-layout">
+        <div class="evp-layout__intro">
+          <p class="eyebrow">Why Work Here</p>
+          <h2>Support you can evaluate.</h2>
+          <p>See what support, growth, and day-to-day work can feel like here.</p>
+        </div>
+        <div class="evp-feature-grid" aria-label="Workplace support pillars">
+          ${features.map(([title, copy], i) => `
+            <article class="evp-feature-card">
+              <span class="card__icon">${evpIcons[i]}</span>
+              <h3>${title}</h3>
+              <p>${copy}</p>
+            </article>
+          `).join("")}
         </div>
       </div>
     </section>
@@ -83,29 +127,66 @@ export function evpWidget() {
 }
 
 export function careerAreasWidget() {
+  const areaIcons = [contentIcons.frontline, contentIcons.corporate, contentIcons.technology, contentIcons.healthcare, contentIcons.operations, contentIcons.early];
+  const memberCounts = ["42 teams", "18 teams", "26 teams", "14 teams", "31 teams", "9 programs"];
+  const positionCounts = ["8 roles", "6 roles", "7 roles", "5 roles", "6 roles", "3 roles"];
   return `
-    <section class="section">
-      <div class="container">
-        ${sectionHeader("Career Areas", "Explore by work style, not just department.", "Candidates can scan impact, pace, growth, and environment cues before they browse jobs.")}
-        <div class="grid grid--3">${careerAreas.map((area) => simpleCard([area[0], area[1], `${area[2]} · ${area[3]}`, "Explore roles"], "◆")).join("")}</div>
+    <section class="section career-areas-section">
+      <div class="container career-areas-panel">
+        <div class="career-areas-heading">
+          <p class="eyebrow">Career Areas</p>
+          <h2>Explore by work style.</h2>
+          <p>Choose the team environment that fits how you want to contribute.</p>
+        </div>
+        <div class="career-area-list">
+          ${careerAreas.map(([title, copy], i) => `
+            <a class="career-area-row" href="${pageHref("career-areas.html")}">
+              <span class="career-area-row__icon" aria-hidden="true">${areaIcons[i]}</span>
+              <span class="career-area-row__content">
+                <strong>${title}</strong>
+                <small>${copy}</small>
+              </span>
+              <span class="career-area-row__meta">${memberCounts[i]}</span>
+              <span class="career-area-row__pill">${positionCounts[i]}</span>
+              <span class="career-area-row__chevron" aria-hidden="true">⌄</span>
+            </a>
+          `).join("")}
+        </div>
       </div>
     </section>
   `;
 }
 
 export function locationsWidget() {
+  const serviceAreas = [
+    ["North Region", "Hybrid hubs and field support teams."],
+    ["Central Region", "Learning spaces and frontline opportunities."],
+    ["East Region", "Care, support, and operations teams."],
+    ["Southwest Region", "Growing operations and leadership paths."],
+    ["Remote Eligible", "Core hours and collaboration clarity."]
+  ];
+
   return `
-    <section class="section section--soft">
-      <div class="container split-panel">
-        <div>
-          ${sectionHeader("Location Discovery", "Find roles around how your life works.", "Searchable regions, remote eligibility, commute cues, and flexibility indicators make location decisions clearer.")}
-          <div class="grid">${locations.map((location) => simpleCard([location[0], location[1], "", "View opportunities"], "⌖")).join("")}</div>
+    <section class="section section--soft location-service-section">
+      <div class="container location-service-layout">
+        <div class="location-service-copy">
+          <p class="eyebrow">Location Discovery</p>
+          <h2>Find roles around your life.</h2>
+          <p>Browse regions, remote options, and flexibility cues that fit your day-to-day needs.</p>
+          ${button("Search by location", "pages/search-results.html", "primary")}
         </div>
-        <div class="location-map" aria-label="Map inspired location discovery panel">
-          <p class="eyebrow">Map-aware layout</p>
-          <h3>Regional opportunity clusters</h3>
-          <p>Use this module as a placeholder for maps, commute estimates, region cards, or location recommendation logic.</p>
-        </div>
+        <nav class="location-link-list" aria-label="Location links">
+          ${serviceAreas.map(([title, copy]) => `
+            <a href="${pageHref("search-results.html")}">
+              <span class="location-link-list__pin" aria-hidden="true">${contentIcons.location}</span>
+              <span>
+                <strong>${title}</strong>
+                <small>${copy}</small>
+              </span>
+              <span class="location-link-list__arrow" aria-hidden="true">→</span>
+            </a>
+          `).join("")}
+        </nav>
       </div>
     </section>
   `;
@@ -113,20 +194,32 @@ export function locationsWidget() {
 
 export function storiesWidget() {
   return `
-    <section class="section">
-      <div class="container">
-        ${sectionHeader("Employee Stories", "Realistic stories that reduce the unknown.", "Narratives show belonging, growth, and team support through practical moments rather than inflated claims.")}
-        <div class="story-slider">
-          <div class="story-track" aria-label="Employee stories">
-            ${stories.map((story) => `
-              <article class="card story-card">
-                <div class="portrait">${story.initials}</div>
-                <p class="eyebrow">${story.role}</p>
-                <h3>${story.name}'s path</h3>
-                <p>“${story.quote}”</p>
-                <p>${story.detail}</p>
+    <section class="section" id="stories">
+      <div class="container story-section">
+        <div class="story-section__header">
+          <p class="eyebrow">Employee Stories</p>
+          <h2>Hear what made the work feel possible.</h2>
+          <p>Short stories create trust without overwhelming the page.</p>
+        </div>
+        <div class="story-carousel" data-story-carousel aria-label="Employee stories carousel">
+          <div class="story-carousel__viewport" aria-live="polite">
+            ${stories.map((story, index) => `
+              <article class="story-slide" data-story-slide ${index === 0 ? "" : "hidden"}>
+                <div class="story-slide__image">
+                  <img src="${asset(story.image)}" alt="${story.imageAlt}">
+                </div>
+                <div class="story-slide__content">
+                  <p class="eyebrow">${story.role}</p>
+                  <h3>${story.name}</h3>
+                  <blockquote>“${story.quote}”</blockquote>
+                </div>
               </article>
             `).join("")}
+          </div>
+          <div class="story-carousel__controls">
+            <button class="story-carousel__arrow" type="button" data-story-prev aria-label="Show previous employee story">←</button>
+            <span class="story-carousel__status" data-story-status>1 / ${stories.length}</span>
+            <button class="story-carousel__arrow" type="button" data-story-next aria-label="Show next employee story">→</button>
           </div>
         </div>
       </div>
@@ -135,16 +228,34 @@ export function storiesWidget() {
 }
 
 export function benefitsWidget() {
+  const icons = [
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8c6 0 11 5 11 11 0 10-11 21-11 21S13 29 13 19c0-6 5-11 11-11Z"/><path d="M24 15v10M19 20h10"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 9h18v8a9 9 0 0 1-18 0V9Z"/><path d="M12 39h24M24 26v13M16 17H9c0 7 4 11 9 12M32 17h7c0 7-4 11-9 12"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 10 15v10c0 9 6 14 14 17 8-3 14-8 14-17V15L24 8Z"/><path d="m17 25 5 5 10-12"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 31c7 0 9-14 16-14 4 0 7 4 12 4"/><path d="M10 39h28M15 9v8M33 31v8"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 16h24M14 16v22h20V16M18 16V9h12v7"/><path d="M20 25h8M20 32h5"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9v30M12 18h24M16 28h16"/><path d="M11 39h26"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M16 36c0-8 16-8 16 0"/><circle cx="24" cy="18" r="7"/><path d="M8 34c1-5 5-8 10-8M40 34c-1-5-5-8-10-8"/></svg>`,
+    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 24h20M24 14v20"/><path d="M24 8 9 16v16l15 8 15-8V16L24 8Z"/></svg>`
+  ];
+
   return `
-    <section class="section section--soft">
-      <div class="container split-panel">
-        <div>
+    <section class="section section--inverse benefits-feature-section">
+      <div class="container benefits-feature-layout">
+        <div class="benefits-feature-header">
           <p class="eyebrow">Benefits & Rewards</p>
-          <h2 class="phw-g-h2-dark">Support details candidates can skim and trust.</h2>
-          <p class="section-lede">Expandable content keeps the page calm while giving motivated candidates enough detail to make a confident decision.</p>
-          ${button("Explore benefits", "pages/benefits.html", "primary")}
+          <h2>Benefits that support your life.</h2>
+          <p>Clear rewards across care, flexibility, wellbeing, and time away.</p>
         </div>
-        ${accordion(benefits)}
+        <div class="benefits-feature-grid" aria-label="Benefits and rewards highlights">
+          ${benefits.map(([title, copy], index) => `
+            <article class="benefit-feature-card">
+              <div class="benefit-feature-card__icon">${icons[index]}</div>
+              <h3>${title}</h3>
+              <p>${copy}</p>
+            </article>
+          `).join("")}
+        </div>
       </div>
     </section>
   `;
@@ -152,18 +263,15 @@ export function benefitsWidget() {
 
 export function cultureWidget() {
   return `
-    <section class="section">
+    <section class="section" id="culture">
       <div class="container split-panel">
-        <div>
-          ${sectionHeader("Culture & Belonging", "Respect shows up in daily routines.", "The strongest culture proof is behavioral: clear huddles, manager availability, inclusive feedback, and support when work gets complex.")}
-          <div class="grid grid--2">
-            ${["Team agreements clarify how people communicate.", "Managers check in before small issues become big ones.", "New employees learn where to ask for help.", "Different work styles are respected through practical norms."].map((copy) => simpleCard(["Practical proof", copy], "✓")).join("")}
-          </div>
+        <div class="culture-copy">
+          ${sectionHeader("Culture & Belonging", "Respect shows up in daily routines.")}
+          <p class="culture-description">Teams start the week by aligning on priorities, support needs, and shared decisions. It creates rhythm and space to ask for help.</p>
+          <a class="culture-link" href="${pageHref("life.html")}">Explore culture →</a>
         </div>
-        <div class="card">
-          <p class="eyebrow">Trust Cue</p>
-          <h3>What candidates learn before applying</h3>
-          <p>How teams collaborate, who supports onboarding, what flexibility means by role, and how success is measured after the first month.</p>
+        <div class="visual-panel">
+          <img src="${asset("career-culture-belonging-team-ritual.png")}" alt="Coworkers participating in a team culture and belonging discussion">
         </div>
       </div>
     </section>
@@ -178,14 +286,60 @@ export function growthWidget() {
     ["Next Step", "Move into specialist, lead, manager, or cross-functional pathways when ready."]
   ];
   return `
-    <section class="section section--inverse">
-      <div class="container split-panel">
-        <div>
+    <section class="section section--inverse growth-pathways-section" id="growth">
+      <div class="container growth-pathways" data-growth-tabs>
+        <div class="growth-pathways__header">
           <p class="eyebrow">Career Growth Pathways</p>
           <h2>See a future before you apply.</h2>
-          <p class="section-lede">Progression cues help candidates imagine staying, learning, and becoming more valuable over time.</p>
+          <p>Simple milestones make growth easier to picture.</p>
         </div>
-        <div class="timeline">${steps.map(([time, copy]) => `<div class="timeline__item"><strong>${time}</strong><span>${copy}</span></div>`).join("")}</div>
+        <div class="growth-pathways__tabs" role="tablist" aria-label="Career growth milestones">
+          ${steps.map(([time], index) => `
+            <button
+              class="growth-pathways__tab"
+              type="button"
+              role="tab"
+              id="growth-tab-${index}"
+              aria-controls="growth-panel-${index}"
+              aria-selected="${index === 0 ? "true" : "false"}"
+              data-growth-tab="${index}"
+            >${time}</button>
+          `).join("")}
+        </div>
+        <div class="growth-pathways__panels">
+          ${steps.map(([time, copy], index) => `
+            <article
+              class="growth-pathways__panel"
+              role="tabpanel"
+              id="growth-panel-${index}"
+              aria-labelledby="growth-tab-${index}"
+              data-growth-panel="${index}"
+              ${index === 0 ? "" : "hidden"}
+            >
+              <p class="eyebrow">${time}</p>
+              <h3>${time === "Next Step" ? "Move forward when you are ready." : `What ${time.toLowerCase()} can look like.`}</h3>
+              <p>${copy}</p>
+            </article>
+          `).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+export function jobMatchCtaWidget() {
+  const signals = ["Answer a few quick questions", "Match by interest and location", "See roles that fit your next step"];
+  return `
+    <section class="job-match-cta-section">
+      <div class="container job-match-cta">
+        <div>
+          <p class="eyebrow">Personalized Job Match</p>
+          <h2>Discover roles that fit how you work.</h2>
+          <div class="job-match-cta__signals" aria-label="Job matching benefits">
+            ${signals.map((signal) => `<span>✓ ${signal}</span>`).join("")}
+          </div>
+        </div>
+        <button class="btn btn--secondary" type="button" data-job-match-open aria-haspopup="dialog">Start matching →</button>
       </div>
     </section>
   `;
@@ -195,7 +349,7 @@ export function eventsWidget() {
   return `
     <section class="section">
       <div class="container">
-        ${sectionHeader("Hiring Events", "Low-pressure ways to learn more.", "Events help passive candidates ask practical questions before they apply.")}
+        ${sectionHeader("Hiring Events", "Low-pressure ways to learn more.", "A short path from curiosity to conversation.")}
         <div class="grid grid--4">${events.map(([date, title, type, focus, copy]) => `
           <article class="card">
             ${badge(type, type === "Virtual" ? "success" : "warning")}
@@ -212,24 +366,55 @@ export function eventsWidget() {
 
 export function talentCommunityWidget() {
   return `
-    <section class="section section--soft">
-      <div class="container split-panel">
-        <div>
-          <p class="eyebrow">Talent Community</p>
-          <h2 class="phw-g-h2-dark">Not ready to apply? Keep the door open.</h2>
-          <p class="section-lede">A lightweight form supports passive candidates with role alerts, event invites, and practical career guidance.</p>
-        </div>
-        <form class="card" data-community-form>
-          <div class="form-grid">
-            <div class="field"><label for="tc-name">Name</label><input id="tc-name" required autocomplete="name"></div>
-            <div class="field"><label for="tc-email">Email</label><input id="tc-email" type="email" required autocomplete="email"></div>
-            <div class="field"><label for="tc-interest">Career Interest</label><select id="tc-interest"><option>Technology & Data</option><option>Frontline</option><option>Operations</option><option>Care & Wellness</option></select></div>
-            <div class="field"><label for="tc-location">Location Interest</label><select id="tc-location"><option>Remote Eligible</option><option>North Region</option><option>Central Region</option><option>East Region</option></select></div>
-            <div class="field field--full"><label><input type="checkbox" required> I agree to receive career updates and understand I can opt out.</label></div>
+    <section class="section talent-alert-section">
+      <div class="container">
+        <form class="talent-alert" data-community-form>
+          <div class="talent-alert__header">
+            <p class="eyebrow">Talent Community</p>
+            <h2>Not ready to apply?</h2>
+            <p>Get relevant roles and event updates when the timing is right.</p>
           </div>
-          <button class="btn btn--primary" type="submit">Join Talent Community</button>
-          <p class="success-message" role="status">Thanks. Your preferences are saved for this demo experience.</p>
+          <div class="talent-alert__form-row">
+            <div class="field">
+              <label for="tc-email">Email</label>
+              <input id="tc-email" type="email" required autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="tc-interest">Career Interest</label>
+              <select id="tc-interest" required>
+                <option>Technology & Data</option>
+                <option>Frontline</option>
+                <option>Operations</option>
+                <option>Care & Wellness</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tc-location">Location Interest</label>
+              <select id="tc-location">
+                <option>Remote Eligible</option>
+                <option>North Region</option>
+                <option>Central Region</option>
+                <option>East Region</option>
+              </select>
+            </div>
+            <button class="btn btn--primary talent-alert__submit" type="submit">Join Talent Community</button>
+          </div>
+          <div class="talent-alert__consent">
+            <label class="checkbox-field"><input type="checkbox" required> <span>I agree to receive career updates and understand I can opt out.</span></label>
+          </div>
+          <p class="success-message" role="status">Thanks. Your preferences are saved for future updates.</p>
         </form>
+      </div>
+    </section>
+  `;
+}
+
+export function jobListingCtaWidget() {
+  return `
+    <section class="job-listing-cta-section">
+      <div class="container job-listing-cta">
+        <h2>Ready to find a role that fits?</h2>
+        ${button("Explore job listings →", "pages/search-results.html", "secondary")}
       </div>
     </section>
   `;
@@ -241,8 +426,8 @@ export function footerWidget() {
 
 export const homeWidgets = [
   heroSearchWidget,
+  jobMatchCtaWidget,
   candidatePathwaysWidget,
-  featuredJobsWidget,
   evpWidget,
   careerAreasWidget,
   locationsWidget,
@@ -250,6 +435,7 @@ export const homeWidgets = [
   benefitsWidget,
   cultureWidget,
   growthWidget,
-  eventsWidget,
+  featuredJobsWidget,
+  jobListingCtaWidget,
   talentCommunityWidget
 ];

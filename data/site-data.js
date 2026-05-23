@@ -2,42 +2,39 @@ export const navItems = [
   ["Working Here", "life.html"],
   ["Career Areas", "career-areas.html"],
   ["Locations", "locations.html"],
-  ["Benefits", "benefits.html"],
-  ["Events", "events.html"],
-  ["Students & Early Careers", "early-careers.html"],
+  ["Early Careers", "early-careers.html"],
   ["Search Jobs", "search-results.html"]
 ];
 
 export const pathways = [
-  ["Frontline Roles", "Work close to customers, patients, guests, or communities with clear training and steady support.", "Start with confidence"],
-  ["Corporate Roles", "Build systems, programs, and decisions that help teams do their best work.", "Explore business paths"],
-  ["Technology Roles", "Create reliable digital experiences with product, data, security, and platform teams.", "Find technology roles"],
-  ["Healthcare Roles", "Support care delivery, coordination, and service experiences with practical resources.", "See care pathways"],
-  ["Operations Roles", "Keep essential work moving through planning, logistics, facilities, and process improvement.", "View operations"],
-  ["Leadership", "Guide people, remove barriers, and build high-trust teams with measurable impact.", "Grow as a leader"],
-  ["Students & Early Careers", "Learn through mentorship, rotational work, and projects that build confidence.", "Begin your path"],
-  ["Support Roles", "Help employees and candidates get answers, tools, and human support when it matters.", "Support the mission"]
+  ["Frontline Roles", "Customer-facing work with clear training and team support.", "Start with confidence"],
+  ["Corporate Roles", "Programs, strategy, and shared services that help teams scale.", "Explore business paths"],
+  ["Technology Roles", "Product, data, security, and platform work with visible impact.", "Find technology roles"],
+  ["Healthcare Roles", "Care, coordination, and support roles built around trust.", "See care pathways"],
+  ["Operations Roles", "Planning, logistics, and field support that keep work moving.", "View operations"],
+  ["Leadership", "Guide teams, remove blockers, and grow people with care.", "Grow as a leader"],
+  ["Early Careers", "Mentored first roles, projects, and rotations.", "Begin your path"],
+  ["Support Roles", "Help people find answers and move forward with confidence.", "Support the mission"]
 ];
 
 export const evpPillars = [
-  ["Growth", "Structured learning, internal mobility, and visible next steps help you understand what progress can look like."],
-  ["Purpose", "Teams see how their work improves everyday experiences for the people they serve."],
-  ["Flexibility", "Role-specific scheduling choices and clear expectations help candidates evaluate fit earlier."],
-  ["Stability", "Transparent teams, practical onboarding, and consistent operating rhythms reduce uncertainty."],
-  ["Innovation", "Continuous improvement is treated as shared work, not a buzzword."],
-  ["Wellbeing", "Support programs focus on health, rest, financial confidence, and sustainable work."],
-  ["Belonging", "Managers are expected to create respectful team habits and listen early."],
-  ["Learning", "Mentorship, peer coaching, and practical skill paths help people build momentum."],
-  ["Community", "Teams connect through service, shared goals, and moments that make work feel human."]
+  ["Growth", "Clear next steps, coaching, and internal mobility."],
+  ["Purpose", "Work connected to people, service, and daily impact."],
+  ["Flexibility", "Role-specific schedule and location clarity."],
+  ["Stability", "Practical onboarding and steady team rhythms."],
+  ["Wellbeing", "Health, rest, and financial support."],
+  ["Belonging", "Respectful teams with clear ways to be heard."],
+  ["Learning", "Mentorship and skill paths that build confidence."],
+  ["Community", "Shared goals, service, and human connection."]
 ];
 
 export const careerAreas = [
-  ["Customer & Frontline", "High-impact service roles with clear training, team support, and flexible schedule options.", "High volume", "Entry to lead"],
-  ["Corporate & Shared Services", "Finance, people, legal, marketing, and strategy work that shapes scalable programs.", "Strategic work", "Specialist to director"],
-  ["Technology & Data", "Product, engineering, analytics, security, and platform roles with modern delivery practices.", "Hybrid friendly", "Builder to architect"],
-  ["Care & Wellness", "Clinical, coordination, wellness, and support roles designed around trust and empathy.", "Purpose led", "Credential paths"],
-  ["Operations & Supply", "Process, logistics, facilities, and field support roles that keep essential work moving.", "Hands-on impact", "Manager paths"],
-  ["Early Careers", "Internships, apprenticeships, and first-role programs with coaching and project visibility.", "Guided start", "Rotational growth"]
+  ["Customer & Frontline", "Service roles with training, support, and flexible paths.", "Entry to lead"],
+  ["Corporate & Shared Services", "Business functions that shape scalable programs.", "Specialist paths"],
+  ["Technology & Data", "Product, analytics, security, and platform teams.", "Builder to architect"],
+  ["Care & Wellness", "Care and coordination work centered on trust.", "Credential paths"],
+  ["Operations & Supply", "Planning and field support for essential work.", "Manager paths"],
+  ["Early Careers", "First-role programs with coaching and projects.", "Guided start"]
 ];
 
 export const jobs = [
@@ -53,7 +50,7 @@ export const jobs = [
     level: "Entry",
     compensation: "$42,000 - $52,000",
     tags: ["Featured", "Training Provided", "Growth Path"],
-    summary: "Help people feel welcomed, informed, and supported while learning a role with clear coaching and daily team routines."
+    summary: "Welcome people, answer questions, and grow through clear coaching."
   },
   {
     id: "job-002",
@@ -67,7 +64,7 @@ export const jobs = [
     level: "Associate",
     compensation: "$58,000 - $72,000",
     tags: ["Recently Added", "Hybrid", "Benefits"],
-    summary: "Support employee programs, onboarding touchpoints, and manager resources that make work clearer and more human."
+    summary: "Support onboarding, manager resources, and employee programs."
   },
   {
     id: "job-003",
@@ -81,7 +78,7 @@ export const jobs = [
     level: "Mid",
     compensation: "$82,000 - $106,000",
     tags: ["Remote", "Learning Budget", "Analytics"],
-    summary: "Translate candidate and employee journey signals into insights that improve digital experiences and reduce friction."
+    summary: "Turn journey signals into cleaner digital experiences."
   },
   {
     id: "job-004",
@@ -95,7 +92,7 @@ export const jobs = [
     level: "Entry",
     compensation: "$24 - $29 hourly",
     tags: ["Part-Time", "Urgent Hiring", "Wellbeing"],
-    summary: "Coordinate daily support details, answer practical questions, and help teams create calm, respectful experiences."
+    summary: "Coordinate support details and create calm daily experiences."
   },
   {
     id: "job-005",
@@ -109,7 +106,7 @@ export const jobs = [
     level: "Manager",
     compensation: "$96,000 - $124,000",
     tags: ["Leadership", "Hybrid", "Stable Team"],
-    summary: "Lead planning rhythms, remove process blockers, and coach a team that keeps essential services dependable."
+    summary: "Lead planning rhythms and remove process blockers."
   },
   {
     id: "job-006",
@@ -123,7 +120,7 @@ export const jobs = [
     level: "Entry",
     compensation: "$50,000 - $62,000",
     tags: ["Recently Added", "Mentorship", "Rotational"],
-    summary: "Join guided rotations, receive manager coaching, and build practical skills through visible project work."
+    summary: "Build skills through rotations, coaching, and project work."
   }
 ];
 
@@ -132,47 +129,50 @@ export const stories = [
     initials: "AR",
     name: "Ari",
     role: "Operations Lead",
-    quote: "I did not need to know every answer on day one. What helped was a manager who made the first month clear.",
-    detail: "Ari moved from a frontline role into operations leadership after building scheduling and coaching skills."
+    quote: "My first month felt clear, not overwhelming.",
+    image: "story-ari-operations-lead.png",
+    imageAlt: "Ari, an operations lead, smiling in a bright office"
   },
   {
     initials: "MK",
     name: "Mika",
     role: "Product Analyst",
-    quote: "The work felt approachable because the team explained why each decision mattered to candidates and employees.",
-    detail: "Mika joined through an early-career program and now mentors new analysts on inclusive research habits."
+    quote: "The team made the work feel approachable.",
+    image: "story-mika-product-analyst.png",
+    imageAlt: "Mika, a product analyst, working at a laptop in a bright office"
   },
   {
     initials: "JL",
     name: "Jordan",
     role: "Care Support Coordinator",
-    quote: "I wanted work that felt human but still had structure. The routines here helped me build confidence quickly.",
-    detail: "Jordan uses team huddles, peer check-ins, and clear escalation paths to support calm daily experiences."
+    quote: "The routines helped me build confidence quickly.",
+    image: "story-jordan-care-support.png",
+    imageAlt: "Jordan, a care support coordinator, seated in a bright workplace"
   }
 ];
 
 export const benefits = [
-  ["Health Support", "Medical, dental, vision, and care navigation options designed to help people get answers sooner."],
-  ["Paid Time Off", "Time away, holidays, and rest practices are described clearly so candidates can plan realistically."],
-  ["Wellness", "Mental health, coaching, and wellbeing resources support sustainable work habits."],
-  ["Flexibility", "Where roles allow it, teams define schedule choices, core hours, and location expectations early."],
-  ["Financial Wellbeing", "Savings programs, retirement support, and practical education help employees plan ahead."],
-  ["Learning", "Role training, skill paths, certifications, and mentorship help growth feel concrete."],
-  ["Family Support", "Leave, caregiving resources, and life-stage support help employees navigate real responsibilities."],
-  ["Employee Value", "Discounts, recognition, and community programs reinforce daily appreciation without overpromising."]
+  ["Health Support", "Coverage and care navigation."],
+  ["Paid Time Off", "Time away explained clearly."],
+  ["Wellness", "Mental health and wellbeing resources."],
+  ["Flexibility", "Role-specific schedule clarity."],
+  ["Financial Wellbeing", "Savings and retirement support."],
+  ["Learning", "Training, mentorship, and skill paths."],
+  ["Family Support", "Leave and caregiving resources."],
+  ["Employee Value", "Recognition and practical perks."]
 ];
 
 export const events = [
-  ["May 28", "Virtual Career Preview", "Virtual", "Frontline, Operations", "Meet hiring teams, learn what the first 30 days look like, and ask practical questions."],
-  ["June 06", "Early Careers Project Night", "Virtual", "Students & Early Careers", "Explore sample projects, mentorship expectations, and interview preparation."],
-  ["June 18", "Care & Support Open House", "In Person", "Healthcare, Support", "Tour a representative team environment and hear how schedules and training work."],
-  ["July 09", "Technology Hiring Forum", "Virtual", "Technology & Data", "Hear from product and engineering leaders about delivery practices and growth paths."]
+  ["May 28", "Virtual Career Preview", "Virtual", "Frontline, Operations", "Meet hiring teams and ask practical questions."],
+  ["June 06", "Early Careers Project Night", "Virtual", "Early Careers", "Explore projects, mentorship, and interview prep."],
+  ["June 18", "Care & Support Open House", "In Person", "Healthcare, Support", "See how training and schedules work."],
+  ["July 09", "Technology Hiring Forum", "Virtual", "Technology & Data", "Hear about delivery practices and growth paths."]
 ];
 
 export const locations = [
-  ["North Region", "Regional hubs with hybrid office space, field support teams, and strong commuter guidance."],
-  ["Central Region", "Large service centers, learning spaces, and high-volume frontline opportunities."],
-  ["East Region", "Care, support, and operations teams connected by predictable scheduling practices."],
-  ["Southwest Region", "Growing operations network with leadership pathways and flexible location options."],
-  ["Remote Eligible", "Selected roles with documented collaboration rhythms, equipment guidance, and core hours."]
+  ["North Region", "Hybrid hubs and field support teams."],
+  ["Central Region", "Learning spaces and frontline opportunities."],
+  ["East Region", "Care, support, and operations teams."],
+  ["Southwest Region", "Growing operations and leadership paths."],
+  ["Remote Eligible", "Core hours and collaboration clarity."]
 ];
