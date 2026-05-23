@@ -34,9 +34,9 @@ const routes = {
 };
 
 const normalizePath = () => {
-  const root = "/career-platform-template";
   const path = window.location.pathname.endsWith("/") ? `${window.location.pathname}index.html` : window.location.pathname;
-  return path.startsWith(root) ? path.slice(root.length) || "/" : path;
+  const basePath = ["/career-platform-template", "/minimaltemplate3"].find((root) => path.startsWith(root));
+  return basePath ? path.slice(basePath.length) || "/" : path;
 };
 
 function render() {
