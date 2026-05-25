@@ -63,7 +63,7 @@ export function candidatePathwaysWidget() {
   return `
     <section class="section">
       <div class="container">
-        ${sectionHeader("Candidate Pathways", "Start where you see yourself.")}
+        ${sectionHeader("Find your pathway", "Start where you see yourself.")}
         <div class="grid grid--4 airy-grid">${pathways.map(([title, copy, cta], i) => simpleCard([title, copy, "", cta, "career-areas/frontline-workers.html"], pathwayIcons[i])).join("")}</div>
       </div>
     </section>
@@ -179,7 +179,7 @@ export function locationsWidget() {
     <section class="section section--soft location-service-section">
       <div class="container location-service-layout">
         <div class="location-service-copy">
-          <p class="eyebrow">Location Discovery</p>
+          <p class="eyebrow">Discover our locations</p>
           <h2>Find roles around your life.</h2>
           <p>Browse regions, remote options, and flexibility cues that fit your day-to-day needs.</p>
           ${button("Search by location", "pages/search-results.html", "primary")}
@@ -206,7 +206,7 @@ export function storiesWidget() {
     <section class="section" id="stories">
       <div class="container story-section">
         <div class="story-section__header">
-          <p class="eyebrow">Employee Stories</p>
+          <p class="eyebrow">Some of our stories</p>
           <h2>Hear what made the work feel possible.</h2>
           <p>Short stories create trust without overwhelming the page.</p>
         </div>
@@ -266,7 +266,7 @@ export function cultureWidget() {
     <section class="section section--inverse" id="culture">
       <div class="container split-panel">
         <div class="culture-copy">
-          ${sectionHeader("Culture & Belonging", "Respect shows up in daily routines.")}
+          ${sectionHeader("Our culture", "Respect shows up in daily routines.")}
           <p class="culture-description">Teams start the week by aligning on priorities, support needs, and shared decisions. It creates rhythm and space to ask for help.</p>
           ${button("Explore culture →", pageHref("life.html"), "secondary", "culture-link")}
         </div>
@@ -280,47 +280,30 @@ export function cultureWidget() {
 
 export function growthWidget() {
   const steps = [
-    ["Month 1", "Learn the role, meet your support network, and understand what good work looks like."],
-    ["Months 2-6", "Build confidence through coaching, feedback, and visible skill milestones."],
-    ["Year 1", "Explore adjacent roles, mentorship, certifications, or leadership readiness."],
-    ["Next Step", "Move into specialist, lead, manager, or cross-functional pathways when ready."]
+    ["Month 1", "Learn the role, meet your support network, and understand what good work looks like.", "book-open"],
+    ["Months 2-6", "Build confidence through coaching, feedback, and visible skill milestones.", "handshake"],
+    ["Year 1", "Explore adjacent roles, mentorship, certifications, or leadership readiness.", "trending-up"],
+    ["Next Step", "Move into specialist, lead, manager, or cross-functional pathways when ready.", "move-right"]
   ];
   return `
     <section class="section section--inverse growth-pathways-section" id="growth">
-      <div class="container growth-pathways" data-growth-tabs>
-        <div class="growth-pathways__header">
+      <div class="container hiring-journey growth-pathways">
+        <div class="hiring-journey__header growth-pathways__header">
           <p class="eyebrow">Career Growth Pathways</p>
-          <h2>See a future before you apply.</h2>
-          <p>Simple milestones make growth easier to picture.</p>
+          <h2 class="phw-g-h2-dark">See a future before you apply.</h2>
+          <p class="section-lede">Simple milestones make growth easier to picture.</p>
         </div>
-        <div class="growth-pathways__tabs" role="tablist" aria-label="Career growth milestones">
-          ${steps.map(([time], index) => `
-            <button
-              class="growth-pathways__tab"
-              type="button"
-              role="tab"
-              id="growth-tab-${index}"
-              aria-controls="growth-panel-${index}"
-              aria-selected="${index === 0 ? "true" : "false"}"
-              data-growth-tab="${index}"
-            >${time}</button>
-          `).join("")}
-        </div>
-        <div class="growth-pathways__panels">
-          ${steps.map(([time, copy], index) => `
-            <article
-              class="growth-pathways__panel"
-              role="tabpanel"
-              id="growth-panel-${index}"
-              aria-labelledby="growth-tab-${index}"
-              data-growth-panel="${index}"
-              ${index === 0 ? "" : "hidden"}
-            >
-              <p class="eyebrow">${time}</p>
-              <h3>${time === "Next Step" ? "Move forward when you are ready." : `What ${time.toLowerCase()} can look like.`}</h3>
+        <div class="hiring-journey__steps hiring-journey__steps--4" aria-label="Career growth milestones">
+          ${steps.map(([time, copy, icon]) => `
+            <article class="hiring-journey__step">
+              <span class="hiring-journey__icon" aria-hidden="true">${lucideIcon(icon)}</span>
+              <h3>${time}</h3>
               <p>${copy}</p>
             </article>
           `).join("")}
+        </div>
+        <div class="growth-pathways__actions">
+          ${button("Browse available positions", pageHref("search-results.html"), "primary")}
         </div>
       </div>
     </section>

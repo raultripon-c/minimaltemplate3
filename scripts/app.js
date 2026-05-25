@@ -54,7 +54,9 @@ const normalizePath = () => {
 
 function render() {
   const route = routes[normalizePath()] || routes["/"];
-  document.querySelector("#app").innerHTML = `${header(route.active)}${route.render()}${footer()}${jobMatchModal()}${resumeMatchModal()}`;
+  const app = document.querySelector("#app");
+  app.setAttribute("tabindex", "-1");
+  app.innerHTML = `${header(route.active)}${route.render()}${footer()}${jobMatchModal()}${resumeMatchModal()}`;
   bindInteractions();
 }
 
@@ -106,8 +108,14 @@ function bindInteractions() {
         await navigator.share({ title: document.title, url });
       } else {
         await navigator.clipboard?.writeText(url);
-        button.textContent = "✓";
-        setTimeout(() => (button.textContent = "↗"), 1200);
+        const label = button.querySelector("span");
+        if (label) {
+          label.textContent = "Copied";
+          setTimeout(() => (label.textContent = "Share"), 1200);
+        } else {
+          button.textContent = "✓";
+          setTimeout(() => (button.textContent = "↗"), 1200);
+        }
       }
     });
   });
@@ -115,7 +123,11 @@ function bindInteractions() {
   bindTabs();
   bindFilters();
   bindStoryCarousels();
+  bindCultureGalleries();
   bindGrowthTabs();
+  bindJobDetailTabs();
+  bindJobDescriptionToggle();
+  bindSimilarJobsMore();
   renderSavedJobs();
   updateSavedJobLinks();
 }
@@ -656,10 +668,13 @@ function bindTabs() {
       group.querySelectorAll(".tab").forEach((item) => item.setAttribute("aria-selected", "false"));
       tab.setAttribute("aria-selected", "true");
       const value = tab.dataset.tabFilter;
+      const normalizedValue = value.toLowerCase();
       const scope = tab.closest("[data-filter-scope]") || document;
       scope.querySelectorAll("[data-job-card]").forEach((card) => {
-        const visible = value === "All" || value === "Featured" || card.textContent.includes(value) || card.dataset.schedule === value;
-        card.hidden = !visible;
+        const searchable = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
+        const isUnrevealedSimilar = card.dataset.similarExtra === "true" && card.dataset.similarRevealed !== "true";
+        const visible = value === "All" || value === "Featured" || searchable.includes(normalizedValue);
+        card.hidden = !visible || isUnrevealedSimilar;
       });
     });
   });
@@ -674,13 +689,19 @@ function bindFilters() {
 
   const apply = () => {
     const query = (searchInput?.value || "").trim().toLowerCase();
-    const active = checks.filter((check) => check.checked).map((check) => check.value.toLowerCase());
+    const activeByGroup = checks.reduce((groups, check) => {
+      if (!check.checked) return groups;
+      const group = check.closest("[data-filter-group]")?.dataset.filterGroup || "filter";
+      groups[group] ||= [];
+      groups[group].push(check.value.toLowerCase());
+      return groups;
+    }, {});
     let count = 0;
 
     document.querySelectorAll("[data-job-card]").forEach((card) => {
-      const text = card.textContent.toLowerCase();
+      const text = `${card.textContent} ${card.dataset.tags || ""}`.toLowerCase();
       const matchesQuery = !query || text.includes(query);
-      const matchesFilters = active.length === 0 || active.some((filter) => text.includes(filter));
+      const matchesFilters = Object.values(activeByGroup).every((filters) => filters.some((filter) => text.includes(filter)));
       const visible = matchesQuery && matchesFilters;
       card.hidden = !visible;
       if (visible) count += 1;
@@ -702,8 +723,8 @@ function bindFilters() {
 function bindStoryCarousels() {
   document.querySelectorAll("[data-story-carousel]").forEach((carousel) => {
     const slides = [...carousel.querySelectorAll("[data-story-slide]")];
-    const prev = carousel.querySelector("[data-story-prev]");
-    const next = carousel.querySelector("[data-story-next]");
+    const prevButtons = [...carousel.querySelectorAll("[data-story-prev]")];
+    const nextButtons = [...carousel.querySelectorAll("[data-story-next]")];
     const status = carousel.querySelector("[data-story-status]");
     let active = slides.findIndex((slide) => !slide.hidden);
     if (active < 0) active = 0;
@@ -717,9 +738,47 @@ function bindStoryCarousels() {
       if (status) status.textContent = `${active + 1} / ${slides.length}`;
     };
 
-    prev?.addEventListener("click", () => showSlide(active - 1));
-    next?.addEventListener("click", () => showSlide(active + 1));
+    prevButtons.forEach((button) => button.addEventListener("click", () => showSlide(active - 1)));
+    nextButtons.forEach((button) => button.addEventListener("click", () => showSlide(active + 1)));
     showSlide(active);
+  });
+}
+
+function bindCultureGalleries() {
+  document.querySelectorAll("[data-culture-gallery]").forEach((gallery) => {
+    const track = gallery.querySelector("[data-culture-track]");
+    const items = [...gallery.querySelectorAll(".culture-gallery__item")];
+    const prev = gallery.querySelector("[data-culture-prev]");
+    const next = gallery.querySelector("[data-culture-next]");
+    let active = 0;
+
+    const visibleCount = () => {
+      if (window.matchMedia("(max-width: 640px)").matches) return 1;
+      if (window.matchMedia("(max-width: 1024px)").matches) return 2;
+      return 4;
+    };
+
+    const update = () => {
+      if (!track || !items.length) return;
+      const max = Math.max(0, items.length - visibleCount());
+      active = Math.min(Math.max(active, 0), max);
+      const itemWidth = items[0].getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(track).gap) || 0;
+      track.style.transform = `translateX(-${active * (itemWidth + gap)}px)`;
+      if (prev) prev.disabled = active === 0;
+      if (next) next.disabled = active === max;
+    };
+
+    prev?.addEventListener("click", () => {
+      active -= 1;
+      update();
+    });
+    next?.addEventListener("click", () => {
+      active += 1;
+      update();
+    });
+    window.addEventListener("resize", update);
+    update();
   });
 }
 
@@ -753,6 +812,93 @@ function bindGrowthTabs() {
         triggers[nextIndex]?.focus();
         activate(triggers[nextIndex]?.dataset.growthTab);
       });
+    });
+  });
+}
+
+function bindJobDetailTabs() {
+  document.querySelectorAll("[data-job-detail-tabs]").forEach((tablist) => {
+    const tabs = [...tablist.querySelectorAll("[data-job-detail-tab]")];
+    const container = tablist.closest(".job-detail-hero__content");
+    const panels = [...(container?.querySelectorAll("[data-job-detail-panel]") || [])];
+
+    const activate = (id, focus = false) => {
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.jobDetailTab === id;
+        tab.setAttribute("aria-selected", String(isActive));
+        tab.tabIndex = isActive ? 0 : -1;
+        if (isActive && focus) tab.focus();
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.jobDetailPanel !== id;
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.tabIndex = tab.getAttribute("aria-selected") === "true" ? 0 : -1;
+      tab.addEventListener("click", () => activate(tab.dataset.jobDetailTab));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === "Home"
+          ? 0
+          : event.key === "End"
+            ? tabs.length - 1
+            : event.key === "ArrowRight"
+              ? (index + 1) % tabs.length
+              : (index - 1 + tabs.length) % tabs.length;
+        activate(tabs[nextIndex]?.dataset.jobDetailTab, true);
+      });
+    });
+  });
+
+  document.querySelectorAll("[data-job-detail-mobile-sections]").forEach((group) => {
+    const toggles = [...group.querySelectorAll("[data-job-detail-mobile-toggle]")];
+    toggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const panel = document.getElementById(toggle.getAttribute("aria-controls"));
+        const willOpen = toggle.getAttribute("aria-expanded") !== "true";
+
+        toggles.forEach((item) => {
+          item.setAttribute("aria-expanded", "false");
+          const itemPanel = document.getElementById(item.getAttribute("aria-controls"));
+          if (itemPanel) itemPanel.hidden = true;
+        });
+
+        toggle.setAttribute("aria-expanded", String(willOpen));
+        if (panel) panel.hidden = !willOpen;
+      });
+    });
+  });
+}
+
+function bindJobDescriptionToggle() {
+  document.querySelectorAll("[data-job-description-card]").forEach((card) => {
+    const toggle = card.querySelector("[data-job-description-toggle]");
+    const label = toggle?.querySelector("span");
+    if (!toggle || !label) return;
+
+    toggle.addEventListener("click", () => {
+      const isExpanded = !card.classList.toggle("is-collapsed");
+      toggle.setAttribute("aria-expanded", String(isExpanded));
+      label.textContent = isExpanded ? "Show Less" : "Read Full Job Description";
+    });
+  });
+}
+
+function bindSimilarJobsMore() {
+  document.querySelectorAll("[data-similar-jobs-more]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const section = button.closest(".job-detail-recommendations");
+      const cardsToReveal = [...(section?.querySelectorAll("[data-similar-extra='true']:not([data-similar-revealed='true'])") || [])].slice(0, 3);
+      cardsToReveal.forEach((card) => {
+        card.dataset.similarRevealed = "true";
+      });
+      const activeTab = section?.querySelector("[data-tab-filter][aria-selected='true']");
+      activeTab?.click();
+      if (!section?.querySelector("[data-similar-extra='true']:not([data-similar-revealed='true'])")) {
+        button.hidden = true;
+      }
     });
   });
 }

@@ -181,7 +181,7 @@ export function header(active = "") {
             <button type="button" class="utility-link utility-link--button">French</button>
           </div>
           <hr>
-          ${button("Join Talent Community", `${prefix}pages/talent-community.html`, "secondary")}
+          ${button("Join Talent Community", "talent-community.html", "secondary")}
         </nav>
       </div>
     </header>
@@ -245,7 +245,7 @@ export function footer() {
       <div class="container footer-shell">
         <div class="footer-main">
           <div class="footer-brand">
-            <a class="brand-mark" href="${prefix}index.html">
+            <a class="brand-mark" href="${prefix}index.html" aria-label="Company career home">
               <span class="brand-mark__text">Company | Career</span>
             </a>
             <p>Explore roles, culture, benefits, and support for every step of your search.</p>
@@ -465,7 +465,7 @@ export function resumeMatchModal() {
           </label>
           <label class="checkbox-field resume-match-modal__consent">
             <input type="checkbox" data-resume-match-consent>
-            <span>I have read and accept the <a href="pages/accessibility-help.html">privacy policy</a> and <a href="pages/accessibility-help.html">terms of use</a> <strong aria-hidden="true">*</strong></span>
+            <span>I have read and accept the <a href="${pagePath("accessibility-help.html")}">privacy policy</a> and <a href="${pagePath("accessibility-help.html")}">terms of use</a> <strong aria-hidden="true">*</strong></span>
           </label>
           <div class="resume-match-modal__actions">
             <button class="btn btn--secondary" type="button" data-resume-match-close>Cancel</button>
@@ -557,9 +557,10 @@ export function simpleCard([title, copy, _meta, cta, href = "career-areas.html"]
 }
 
 export function jobCard(job, rich = false) {
-  const jobHref = pagePath("job-description.html");
+  const jobHref = `${pagePath("job-description.html")}?job=${encodeURIComponent(job.id)}`;
+  const tags = [job.category, job.schedule, job.workType, job.level, job.location, job.department, ...(job.tags || [])].join(" ").toLowerCase();
   return `
-    <article class="job-card" data-job-card data-category="${job.category}" data-schedule="${job.schedule}" data-work-type="${job.workType}" data-level="${job.level}" data-location="${job.location}" data-shift="${job.shift}">
+    <article class="job-card" data-job-card data-category="${job.category}" data-schedule="${job.schedule}" data-work-type="${job.workType}" data-level="${job.level}" data-location="${job.location}" data-shift="${job.shift}" data-tags="${tags}">
       <div class="job-card__top">
         <div>
           <p class="eyebrow">${job.department}</p>

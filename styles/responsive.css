@@ -72,6 +72,7 @@
   .page-image-feature,
   .page-story-feature,
   .page-location-search,
+  .career-growth-feature,
   .path-preview-layout,
   .path-preview-grid {
     grid-template-columns: 1fr;
@@ -94,8 +95,33 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .page-story-carousel__controls {
+    margin-left: 0;
+  }
+
   .page-proof-bar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .culture-gallery__item {
+    flex-basis: calc((100% - var(--space-4)) / 2);
+  }
+
+  .office-masonry__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .office-masonry__item--wide,
+  .office-masonry__item--square {
+    grid-column: span 1;
+  }
+
+  .hiring-journey__steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hiring-journey__steps::before {
+    display: none;
   }
 }
 
@@ -326,6 +352,47 @@
     width: 100%;
   }
 
+  .job-detail-hero__meta {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .job-detail-hero__meta span {
+    width: 100%;
+  }
+
+  .job-detail-tabs,
+  .job-detail-tabpanels {
+    display: none;
+  }
+
+  .job-detail-recommendations__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-detail-recommendations__inner {
+    width: min(100% - 32px, var(--container));
+  }
+
+  .job-detail-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-detail-benefit-card {
+    border-right: 0;
+    border-bottom: 1px solid var(--stroke-neutral);
+  }
+
+  .job-detail-benefit-card:last-child {
+    border-bottom: 0;
+  }
+
+  .job-detail-mobile-sections {
+    display: grid;
+    margin-top: var(--space-2);
+    border-top: 1px solid var(--stroke-neutral);
+  }
+
   .people-stack {
     grid-template-columns: 1fr;
   }
@@ -374,6 +441,12 @@
 
   .page-cta-actions .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .culture-gallery__item {
+    flex-basis: 100%;
   }
 }
 
@@ -442,6 +515,58 @@
 
   .page-proof-bar {
     grid-template-columns: 1fr;
+  }
+
+  .culture-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .culture-gallery__arrow {
+    justify-self: center;
+  }
+
+  .culture-gallery__item {
+    flex-basis: 100%;
+  }
+
+  .office-masonry__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .office-masonry__item--wide,
+  .office-masonry__item--square {
+    grid-column: 1;
+  }
+
+  .office-masonry__item img {
+    min-height: 260px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .hiring-journey__steps {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .hiring-journey__step {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    column-gap: var(--space-4);
+    text-align: left;
+  }
+
+  .hiring-journey__icon {
+    grid-row: span 3;
+    width: 56px;
+    height: 56px;
+  }
+
+  .hiring-journey__step h3 {
+    margin-top: 0;
+  }
+
+  .hiring-journey__step p {
+    max-width: none;
   }
 
   .footer-columns {
