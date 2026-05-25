@@ -1,26 +1,26 @@
-import { benefits, careerAreas, events, evpPillars, jobs, locations, pathways, stories } from "../data/site-data.js";
-import { badge, button, jobCard, jobsList, sectionHeader, simpleCard } from "../components/common.js";
+import { benefits, careerAreas, evpPillars, jobs, locations, pathways, stories } from "../data/site-data.js";
+import { button, jobCard, jobsList, sectionHeader, simpleCard } from "../components/common.js";
 
 const asset = (file) => `${window.location.pathname.includes("/pages/") ? "../" : ""}assets/illustrations/${file}`;
 const pageHref = (file) => `${window.location.pathname.includes("/pages/") ? "" : "pages/"}${file}`;
-const svgIcon = (paths) => `<svg viewBox="0 0 48 48" aria-hidden="true">${paths}</svg>`;
+const lucideIcon = (name) => `<i data-lucide="${name}" aria-hidden="true"></i>`;
 
 const contentIcons = {
-  frontline: svgIcon(`<path d="M16 33c0-6 16-6 16 0"/><circle cx="24" cy="18" r="6"/><path d="M9 35c1-5 5-8 10-8M39 35c-1-5-5-8-10-8"/>`),
-  corporate: svgIcon(`<path d="M15 17h18v19H15V17Z"/><path d="M20 17v-5h8v5M15 24h18M21 29h2M25 29h2"/>`),
-  technology: svgIcon(`<path d="m18 16-7 8 7 8M30 16l7 8-7 8M27 13l-6 22"/>`),
-  healthcare: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 10-11 21-11 21S13 29 13 19c0-6 5-11 11-11Z"/><path d="M24 15v10M19 20h10"/>`),
-  operations: svgIcon(`<path d="M10 18h12l4 6h12M10 30h10l4-6h14"/><path d="m34 15 4 3-4 3M34 27l4 3-4 3"/>`),
-  leadership: svgIcon(`<path d="M12 34c0-7 10-7 10 0M26 34c0-7 10-7 10 0"/><circle cx="17" cy="19" r="5"/><circle cx="31" cy="19" r="5"/><path d="M24 9v8M20 13h8"/>`),
-  early: svgIcon(`<path d="M12 14h16c4 0 8 3 8 7v13H18c-3 0-6-3-6-6V14Z"/><path d="M18 20h12M18 26h10M36 21l3-3 3 3"/>`),
-  support: svgIcon(`<path d="M12 13h24v16H22l-7 6v-6h-3V13Z"/><path d="M18 20h12M18 25h8"/>`),
-  growth: svgIcon(`<path d="M11 34h26M15 30l7-7 5 5 9-12"/><path d="M31 16h5v5"/>`),
-  purpose: svgIcon(`<path d="M24 8v32M12 15h24l-4 7 4 7H12"/>`),
-  flexibility: svgIcon(`<path d="M11 24c5-8 12-8 17 0 3 5 6 5 9 0"/><path d="M13 32h22M18 14v20"/>`),
-  stability: svgIcon(`<path d="M24 8 11 15v10c0 8 5 13 13 16 8-3 13-8 13-16V15L24 8Z"/><path d="m18 25 4 4 9-10"/>`),
-  wellbeing: svgIcon(`<path d="M24 38s-12-7-12-17a7 7 0 0 1 12-5 7 7 0 0 1 12 5c0 10-12 17-12 17Z"/><path d="M17 25h5l2-5 3 9 2-4h4"/>`),
-  belonging: svgIcon(`<circle cx="24" cy="16" r="6"/><path d="M13 37c2-8 20-8 22 0"/><path d="M9 27c2-4 5-6 9-6M39 27c-2-4-5-6-9-6"/>`),
-  location: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 9-11 21-11 21S13 28 13 19c0-6 5-11 11-11Z"/><circle cx="24" cy="19" r="4"/>`)
+  frontline: lucideIcon("users"),
+  corporate: lucideIcon("briefcase"),
+  technology: lucideIcon("code-2"),
+  healthcare: lucideIcon("heart-pulse"),
+  operations: lucideIcon("workflow"),
+  leadership: lucideIcon("crown"),
+  early: lucideIcon("graduation-cap"),
+  support: lucideIcon("messages-square"),
+  growth: lucideIcon("trending-up"),
+  purpose: lucideIcon("flag"),
+  flexibility: lucideIcon("calendar-clock"),
+  stability: lucideIcon("shield-check"),
+  wellbeing: lucideIcon("heart-handshake"),
+  belonging: lucideIcon("users-round"),
+  location: lucideIcon("map-pin")
 };
 
 export function heroSearchWidget() {
@@ -64,7 +64,7 @@ export function candidatePathwaysWidget() {
     <section class="section">
       <div class="container">
         ${sectionHeader("Candidate Pathways", "Start where you see yourself.")}
-        <div class="grid grid--4 airy-grid">${pathways.map(([title, copy, cta], i) => simpleCard([title, copy, "", cta], pathwayIcons[i])).join("")}</div>
+        <div class="grid grid--4 airy-grid">${pathways.map(([title, copy, cta], i) => simpleCard([title, copy, "", cta, "career-areas/frontline-workers.html"], pathwayIcons[i])).join("")}</div>
       </div>
     </section>
   `;
@@ -111,6 +111,7 @@ export function evpWidget() {
           <p class="eyebrow">Why Work Here</p>
           <h2>Support you can evaluate.</h2>
           <p>See what support, growth, and day-to-day work can feel like here.</p>
+          ${button("Explore benefits & wellbeing →", pageHref("benefits.html"), "secondary")}
         </div>
         <div class="evp-feature-grid" aria-label="Workplace support pillars">
           ${features.map(([title, copy], i) => `
@@ -130,6 +131,14 @@ export function careerAreasWidget() {
   const areaIcons = [contentIcons.frontline, contentIcons.corporate, contentIcons.technology, contentIcons.healthcare, contentIcons.operations, contentIcons.early];
   const memberCounts = ["42 teams", "18 teams", "26 teams", "14 teams", "31 teams", "9 programs"];
   const positionCounts = ["8 roles", "6 roles", "7 roles", "5 roles", "6 roles", "3 roles"];
+  const areaLinks = [
+    "career-areas/frontline-workers.html",
+    "career-areas/corporate-shared-services.html",
+    "career-areas/technology-product.html",
+    "career-areas/healthcare-care-support.html",
+    "career-areas/operations-logistics.html",
+    "career-areas/early-careers.html"
+  ];
   return `
     <section class="section career-areas-section">
       <div class="container career-areas-panel">
@@ -140,7 +149,7 @@ export function careerAreasWidget() {
         </div>
         <div class="career-area-list">
           ${careerAreas.map(([title, copy], i) => `
-            <a class="career-area-row" href="${pageHref("career-areas.html")}">
+            <a class="career-area-row" href="${pageHref(areaLinks[i])}">
               <span class="career-area-row__icon" aria-hidden="true">${areaIcons[i]}</span>
               <span class="career-area-row__content">
                 <strong>${title}</strong>
@@ -177,7 +186,7 @@ export function locationsWidget() {
         </div>
         <nav class="location-link-list" aria-label="Location links">
           ${serviceAreas.map(([title, copy]) => `
-            <a href="${pageHref("search-results.html")}">
+            <a href="${pageHref("locations/north-region.html")}">
               <span class="location-link-list__pin" aria-hidden="true">${contentIcons.location}</span>
               <span>
                 <strong>${title}</strong>
@@ -228,16 +237,7 @@ export function storiesWidget() {
 }
 
 export function benefitsWidget() {
-  const icons = [
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8c6 0 11 5 11 11 0 10-11 21-11 21S13 29 13 19c0-6 5-11 11-11Z"/><path d="M24 15v10M19 20h10"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 9h18v8a9 9 0 0 1-18 0V9Z"/><path d="M12 39h24M24 26v13M16 17H9c0 7 4 11 9 12M32 17h7c0 7-4 11-9 12"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 10 15v10c0 9 6 14 14 17 8-3 14-8 14-17V15L24 8Z"/><path d="m17 25 5 5 10-12"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 31c7 0 9-14 16-14 4 0 7 4 12 4"/><path d="M10 39h28M15 9v8M33 31v8"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 16h24M14 16v22h20V16M18 16V9h12v7"/><path d="M20 25h8M20 32h5"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 9v30M12 18h24M16 28h16"/><path d="M11 39h26"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M16 36c0-8 16-8 16 0"/><circle cx="24" cy="18" r="7"/><path d="M8 34c1-5 5-8 10-8M40 34c-1-5-5-8-10-8"/></svg>`,
-    `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 24h20M24 14v20"/><path d="M24 8 9 16v16l15 8 15-8V16L24 8Z"/></svg>`
-  ];
+  const icons = ["heart-pulse", "clock", "shield-check", "calendar-clock", "circle-dollar-sign", "book-open", "users-round", "gift"].map(lucideIcon);
 
   return `
     <section class="section section--inverse benefits-feature-section">
@@ -263,12 +263,12 @@ export function benefitsWidget() {
 
 export function cultureWidget() {
   return `
-    <section class="section" id="culture">
+    <section class="section section--inverse" id="culture">
       <div class="container split-panel">
         <div class="culture-copy">
           ${sectionHeader("Culture & Belonging", "Respect shows up in daily routines.")}
           <p class="culture-description">Teams start the week by aligning on priorities, support needs, and shared decisions. It creates rhythm and space to ask for help.</p>
-          <a class="culture-link" href="${pageHref("life.html")}">Explore culture →</a>
+          ${button("Explore culture →", pageHref("life.html"), "secondary", "culture-link")}
         </div>
         <div class="visual-panel">
           <img src="${asset("career-culture-belonging-team-ritual.png")}" alt="Coworkers participating in a team culture and belonging discussion">
@@ -328,37 +328,71 @@ export function growthWidget() {
 }
 
 export function jobMatchCtaWidget() {
-  const signals = ["Answer a few quick questions", "Match by interest and location", "See roles that fit your next step"];
   return `
     <section class="job-match-cta-section">
       <div class="container job-match-cta">
         <div>
-          <p class="eyebrow">Personalized Job Match</p>
-          <h2>Discover roles that fit how you work.</h2>
-          <div class="job-match-cta__signals" aria-label="Job matching benefits">
-            ${signals.map((signal) => `<span>✓ ${signal}</span>`).join("")}
-          </div>
+          <h2>We make it easy to find the right job for you.</h2>
         </div>
-        <button class="btn btn--secondary" type="button" data-job-match-open aria-haspopup="dialog">Start matching →</button>
+        <div class="job-match-cta__content">
+          <p>Answer a few quick questions and discover roles that match your interests, experience, and next step.</p>
+          <button class="btn btn--secondary" type="button" data-job-match-open aria-haspopup="dialog">Start matching →</button>
+        </div>
       </div>
     </section>
   `;
 }
 
-export function eventsWidget() {
+export function resumeMatchWidget() {
   return `
-    <section class="section">
+    <section class="resume-match-section" aria-labelledby="resume-match-title">
       <div class="container">
-        ${sectionHeader("Hiring Events", "Low-pressure ways to learn more.", "A short path from curiosity to conversation.")}
-        <div class="grid grid--4">${events.map(([date, title, type, focus, copy]) => `
-          <article class="card">
-            ${badge(type, type === "Virtual" ? "success" : "warning")}
-            <p class="eyebrow">${date} · ${focus}</p>
-            <h3>${title}</h3>
-            <p>${copy}</p>
-            ${button("Register", "pages/events.html", "secondary", "btn--small")}
-          </article>
-        `).join("")}</div>
+        <div class="resume-match-card">
+          <p class="eyebrow">Recommended</p>
+          <h2 id="resume-match-title">Get matched by resume.</h2>
+          <p>Upload your resume and see jobs that match your skills, experience, and next step.</p>
+          <button class="btn btn--primary resume-match-card__upload" type="button" data-resume-match-open aria-haspopup="dialog">
+            ${lucideIcon("upload")}
+            <span>Search with resume</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+export function statsWidget() {
+  const stats = [
+    ["120+", "Teams working across shared goals"],
+    ["18", "Learning communities and interest groups"],
+    ["92%", "Employees say their team is supportive"]
+  ];
+
+  return `
+    <section class="stats-section" aria-label="Career site support stats">
+      <div class="container stats-strip">
+        ${stats.map(([value, label]) => `
+          <div class="stats-strip__item">
+            <strong>${value}</strong>
+            <span>${label}</span>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+export function cultureVideoWidget() {
+  return `
+    <section class="section video-story-section" aria-labelledby="culture-video-title">
+      <div class="container video-story">
+        <div class="video-story__header">
+          <h2 id="culture-video-title">See how our teams work together.</h2>
+        </div>
+        <button class="video-story__placeholder" type="button" aria-label="Play team culture video">
+          <img src="${asset("career-video-culture-placeholder.png")}" alt="Coworkers gathering around a laptop in a bright workplace">
+          <span class="video-story__play" aria-hidden="true">▶</span>
+        </button>
       </div>
     </section>
   `;
@@ -370,9 +404,9 @@ export function talentCommunityWidget() {
       <div class="container">
         <form class="talent-alert" data-community-form>
           <div class="talent-alert__header">
-            <p class="eyebrow">Talent Community</p>
-            <h2>Not ready to apply?</h2>
-            <p>Get relevant roles and event updates when the timing is right.</p>
+            <p class="eyebrow">Job Alerts</p>
+            <h2>Subscribe to job alerts.</h2>
+            <p>Get roles that match your interests and location sent to your inbox.</p>
           </div>
           <div class="talent-alert__form-row">
             <div class="field">
@@ -397,12 +431,12 @@ export function talentCommunityWidget() {
                 <option>East Region</option>
               </select>
             </div>
-            <button class="btn btn--primary talent-alert__submit" type="submit">Join Talent Community</button>
+            <button class="btn btn--primary talent-alert__submit" type="submit">Subscribe to Job Alerts</button>
           </div>
           <div class="talent-alert__consent">
             <label class="checkbox-field"><input type="checkbox" required> <span>I agree to receive career updates and understand I can opt out.</span></label>
           </div>
-          <p class="success-message" role="status">Thanks. Your preferences are saved for future updates.</p>
+          <p class="success-message" role="status">Thanks. Your job alert preferences are saved.</p>
         </form>
       </div>
     </section>
@@ -426,16 +460,15 @@ export function footerWidget() {
 
 export const homeWidgets = [
   heroSearchWidget,
-  jobMatchCtaWidget,
-  candidatePathwaysWidget,
+  resumeMatchWidget,
+  statsWidget,
+  cultureVideoWidget,
   evpWidget,
-  careerAreasWidget,
+  candidatePathwaysWidget,
   locationsWidget,
   storiesWidget,
-  benefitsWidget,
   cultureWidget,
-  growthWidget,
   featuredJobsWidget,
-  jobListingCtaWidget,
+  jobMatchCtaWidget,
   talentCommunityWidget
 ];

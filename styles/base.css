@@ -53,6 +53,13 @@ button {
   display: none !important;
 }
 
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
 :focus-visible {
   outline: 3px solid color-mix(in srgb, var(--alert-focus), white 30%);
   outline-offset: 3px;
@@ -93,7 +100,7 @@ button {
 }
 
 .section--inverse {
-  background: var(--widget-bg-gradient-color);
+  background: var(--widget-bg-solid-color);
   color: var(--light-text);
 }
 
@@ -105,9 +112,9 @@ button {
   display: inline-flex;
   gap: var(--space-2);
   align-items: center;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--section-eyebrow-title-gap);
   color: var(--brand-color-primary);
-  font-size: 0.78rem;
+  font-size: var(--section-eyebrow-size);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -126,7 +133,6 @@ button {
 }
 
 .section-header h1,
-.section-header h2,
 .section-title {
   margin: 0;
   color: inherit;
@@ -139,7 +145,12 @@ button {
 
 .section-header h2,
 .section-title {
+  margin: 0;
+  color: inherit;
+  font-family: var(--font-title);
   font-size: var(--section-h2-size);
+  font-weight: 700;
+  letter-spacing: -0.05em;
   line-height: var(--section-h2-line-height);
 }
 
@@ -147,7 +158,8 @@ button {
 .section-lede {
   margin: 0;
   color: var(--secondary-text);
-  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  font-size: var(--section-description-size);
+  line-height: var(--section-description-line-height);
 }
 
 .section--inverse .section-header p,

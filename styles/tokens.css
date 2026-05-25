@@ -4,7 +4,7 @@
   --brand-color-secondary: #ffffff;
   --brand-color-primary-60: color-mix(in srgb, transparent, var(--brand-color-primary) 60%);
   --brand-color-primary-40: color-mix(in srgb, transparent, var(--brand-color-primary) 40%);
-  --widget-bg-gradient-color: linear-gradient(116deg, #131051 3%, #5c41a6 96%);
+  --widget-bg-solid-color: var(--brand-color-primary);
   --black: #272727;
   --white: #ffffff;
   --black-1: rgba(0, 0, 0, 0.15);
@@ -21,7 +21,7 @@
   --body-bg: #f1f5f9;
   --widget-bg-white-color: #ffffff;
   --widget-bg-gray-color: #f8fafc;
-  --widget-bg-dark-color: #0f172a;
+  --widget-bg-dark-color: var(--brand-color-primary);
   --widget-bg-primary-color: var(--brand-color-primary);
   --icon-bg-primary-color-light: #ede9fe;
   --modal-bg: #ffffff;
@@ -54,8 +54,12 @@
   --surface-inverse: var(--widget-bg-dark-color);
   --font-title: Poppins, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: Poppins, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --section-eyebrow-size: 0.78rem;
+  --section-eyebrow-title-gap: var(--space-3);
   --section-h2-size: clamp(2rem, 4vw, 3.4rem);
   --section-h2-line-height: 1;
+  --section-description-size: clamp(1rem, 1.2vw, 1.1rem);
+  --section-description-line-height: 1.55;
   --section-title-description-gap: var(--space-4);
   --space-1: 4px;
   --space-2: 8px;
@@ -72,9 +76,9 @@
   --radius-lg: 10px;
   --radius-xl: 18px;
   --radius-2xl: 28px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.10);
-  --shadow-lg: 0 28px 70px rgba(15, 23, 42, 0.16);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
   --container: 1440px;
   --transition: 180ms ease;
 }

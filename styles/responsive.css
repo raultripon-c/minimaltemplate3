@@ -67,10 +67,13 @@
   .page-hero--with-image .page-hero__grid,
   .feature-layout,
   .filter-shell,
+  .job-detail-hero__grid,
   .job-detail-layout,
   .page-image-feature,
   .page-story-feature,
-  .page-location-search {
+  .page-location-search,
+  .path-preview-layout,
+  .path-preview-grid {
     grid-template-columns: 1fr;
   }
 
@@ -130,6 +133,10 @@
   .form-grid,
   .footer-main {
     grid-template-columns: 1fr;
+  }
+
+  .section-header {
+    gap: var(--section-title-description-gap);
   }
 
   .evp-feature-grid {
@@ -243,6 +250,62 @@
     width: 100%;
   }
 
+  .stats-strip {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .job-match-cta__content {
+    justify-items: stretch;
+  }
+
+  .resume-match-modal {
+    padding: var(--space-4);
+  }
+
+  .resume-match-modal__header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .resume-match-modal__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .resume-match-modal__actions .btn {
+    width: 100%;
+  }
+
+  .job-match-modal__choices {
+    width: 100%;
+  }
+
+  .job-match-modal__choices .btn {
+    width: 100%;
+  }
+
+  .job-match-modal__experience {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .job-match-modal__lead-grid,
+  .job-match-modal__phone-row {
+    grid-template-columns: 1fr;
+  }
+
+  .job-match-modal__phone-row select,
+  .job-match-modal__phone-row input[type="tel"] {
+    border-radius: 0;
+  }
+
+  .job-match-modal__phone-row select {
+    border-bottom: 1px solid var(--input-stroke);
+  }
+
+  .job-match-modal__phone-row input[type="tel"] {
+    border-left: 0;
+  }
+
   .results-toolbar {
     align-items: flex-start;
     flex-direction: column;
@@ -251,6 +314,16 @@
   .results-sort {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .job-action-strip__inner,
+  .job-action-strip__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .job-action-strip__actions .btn {
+    width: 100%;
   }
 
   .people-stack {

@@ -1,26 +1,49 @@
 import { jobs, navItems } from "../data/site-data.js";
 
 export const icon = (label = "•") => `<span aria-hidden="true">${label}</span>`;
+const lucideIcon = (name) => `<i data-lucide="${name}" aria-hidden="true"></i>`;
 
 const workingHereLinks = [
   ["Life & Culture", "life.html"],
   ["Benefits & Wellbeing", "benefits.html"],
-  ["Inclusion & Belonging", "life.html#culture"],
-  ["Career Growth", "life.html#growth"],
-  ["Employee Stories", "life.html#stories"],
-  ["Events & Hiring Experiences", "events.html"]
+  ["Inclusion & Belonging", "inclusion-belonging.html"]
+];
+
+const careerAreaLinks = [
+  ["All Career Areas", "career-areas.html"],
+  ["Frontline Workers", "career-areas/frontline-workers.html"]
+];
+
+const locationLinks = [
+  ["All Locations", "locations.html"],
+  ["North Region", "locations/north-region.html"]
 ];
 
 function inPages() {
   return window.location.pathname.includes("/pages/");
 }
 
+function pageDepthPrefix() {
+  const path = window.location.pathname;
+  if (!path.includes("/pages/")) return "";
+  const relativePath = path.split("/pages/")[1] || "";
+  const depth = relativePath.split("/").filter(Boolean).length - 1;
+  return depth > 0 ? "../".repeat(depth) : "";
+}
+
+function rootPrefix() {
+  return inPages() ? `../${pageDepthPrefix()}` : "";
+}
+
 function pagePath(file) {
-  return inPages() ? file : `pages/${file}`;
+  if (!inPages()) return `pages/${file}`;
+  return `${pageDepthPrefix()}${file}`;
 }
 
 function normalizeHref(href) {
-  if (href.startsWith("pages/") && inPages()) return href.replace("pages/", "");
+  if (href.startsWith("#") || href.startsWith("http") || href.startsWith("mailto:")) return href;
+  if (href.startsWith("pages/") && inPages()) return `${pageDepthPrefix()}${href.replace("pages/", "")}`;
+  if (inPages() && !href.startsWith("../") && !href.startsWith("/")) return `${pageDepthPrefix()}${href}`;
   return href;
 }
 
@@ -47,13 +70,21 @@ export function badge(label, type = "") {
 }
 
 export function header(active = "") {
-  const prefix = inPages() ? "../" : "";
+  const prefix = rootPrefix();
   const primaryNav = navItems
-    .filter(([label]) => label !== "Working Here")
+    .filter(([label]) => !["Working Here", "Career Areas", "Locations"].includes(label))
     .map(([label, href]) => `<a class="primary-nav__link" href="${prefix}pages/${href}" ${active === href ? 'aria-current="page"' : ""}>${label}</a>`)
     .join("");
-  const workingHereActive = ["life.html", "benefits.html", "events.html"].includes(active);
+  const workingHereActive = ["life.html", "benefits.html", "inclusion-belonging.html"].includes(active);
+  const careerAreasActive = active === "career-areas.html";
+  const locationsActive = active === "locations.html";
   const workingLinks = workingHereLinks
+    .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
+    .join("");
+  const careerLinks = careerAreaLinks
+    .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
+    .join("");
+  const locationNavLinks = locationLinks
     .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
     .join("");
   const utilitySavedHref = `${prefix}pages/saved-jobs.html`;
@@ -91,6 +122,24 @@ export function header(active = "") {
               ${workingLinks}
             </div>
           </div>
+          <div class="nav-menu">
+            <button class="primary-nav__link primary-nav__button" type="button" data-dropdown-trigger="career-areas" aria-expanded="false" aria-controls="career-areas-menu" ${careerAreasActive ? 'aria-current="page"' : ""}>
+              Career Areas
+              <span class="nav-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown" id="career-areas-menu" data-dropdown-menu="career-areas" hidden>
+              ${careerLinks}
+            </div>
+          </div>
+          <div class="nav-menu">
+            <button class="primary-nav__link primary-nav__button" type="button" data-dropdown-trigger="locations" aria-expanded="false" aria-controls="locations-menu" ${locationsActive ? 'aria-current="page"' : ""}>
+              Locations
+              <span class="nav-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="nav-dropdown" id="locations-menu" data-dropdown-menu="locations" hidden>
+              ${locationNavLinks}
+            </div>
+          </div>
           ${primaryNav}
         </nav>
         <div class="utility-nav" aria-label="Utility navigation">
@@ -109,7 +158,19 @@ export function header(active = "") {
           <div class="mobile-submenu" id="mobile-working-here" hidden>
             ${workingLinks}
           </div>
-          ${navItems.filter(([label]) => label !== "Working Here").map(([label, href]) => `<a class="mobile-drawer__link" href="${prefix}pages/${href}">${label}</a>`).join("")}
+          <button class="mobile-drawer__link mobile-drawer__button" type="button" data-mobile-submenu-trigger aria-expanded="false" aria-controls="mobile-career-areas">
+            Career Areas <span aria-hidden="true">⌄</span>
+          </button>
+          <div class="mobile-submenu" id="mobile-career-areas" hidden>
+            ${careerLinks}
+          </div>
+          <button class="mobile-drawer__link mobile-drawer__button" type="button" data-mobile-submenu-trigger aria-expanded="false" aria-controls="mobile-locations">
+            Locations <span aria-hidden="true">⌄</span>
+          </button>
+          <div class="mobile-submenu" id="mobile-locations" hidden>
+            ${locationNavLinks}
+          </div>
+          ${navItems.filter(([label]) => !["Working Here", "Career Areas", "Locations"].includes(label)).map(([label, href]) => `<a class="mobile-drawer__link" href="${prefix}pages/${href}">${label}</a>`).join("")}
           <hr>
           <a class="mobile-drawer__link" href="${utilitySavedHref}" data-saved-link data-saved-mobile>${savedJobsLabel(true)}</a>
           <button class="btn btn--primary" type="button">Sign In</button>
@@ -128,27 +189,25 @@ export function header(active = "") {
 }
 
 export function footer() {
-  const prefix = inPages() ? "../" : "";
+  const prefix = rootPrefix();
   const footerLinks = {
     "Search Jobs": "search-results.html",
-    "Frontline Roles": "career-areas.html",
-    "Corporate Roles": "career-areas.html",
-    "Operations Roles": "career-areas.html",
+    "Frontline Roles": "career-areas/frontline-workers.html",
+    "Corporate Roles": "career-areas/corporate-shared-services.html",
+    "Operations Roles": "career-areas/operations-logistics.html",
     "Early Careers": "early-careers.html",
-    Leadership: "career-areas.html",
+    Leadership: "career-areas/leadership.html",
     Internships: "early-careers.html",
     "Career Areas": "career-areas.html",
     Locations: "locations.html",
-    Events: "events.html",
     "Life at Work": "life.html",
-    "Employee Stories": "life.html#stories",
+    "Inclusion & Belonging": "inclusion-belonging.html",
     "Our Culture": "life.html",
     "How We Hire": "accessibility-help.html",
     "FAQs & Tips": "accessibility-help.html",
     Benefits: "benefits.html",
     "Benefits & Wellbeing": "benefits.html",
-    Growth: "life.html",
-    Belonging: "life.html",
+    Belonging: "inclusion-belonging.html",
     Accessibility: "accessibility-help.html",
     "Application Support": "accessibility-help.html",
     "Saved Jobs": "saved-jobs.html",
@@ -159,8 +218,8 @@ export function footer() {
     Privacy: "accessibility-help.html"
   };
   const columns = [
-    ["Discover", ["Search Jobs", "Frontline Roles", "Corporate Roles", "Operations Roles", "Early Careers", "Leadership", "Internships", "Events", "Talent Community"]],
-    ["Who We Are", ["Employee Stories", "Our Culture", "Benefits & Wellbeing", "Belonging", "How We Hire", "Growth", "FAQs & Tips"]]
+    ["Discover", ["Search Jobs", "Frontline Roles", "Corporate Roles", "Operations Roles", "Early Careers", "Leadership", "Internships", "Talent Community"]],
+    ["Who We Are", ["Life at Work", "Our Culture", "Benefits & Wellbeing", "Inclusion & Belonging", "How We Hire", "FAQs & Tips"]]
   ];
   const socialLinks = [
     {
@@ -216,6 +275,205 @@ export function footer() {
         </div>
       </div>
     </footer>
+  `;
+}
+
+export function jobMatchModal() {
+  return `
+    <div class="job-match-modal" data-job-match-modal hidden>
+      <div class="job-match-modal__backdrop" data-job-match-close></div>
+      <section class="job-match-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="job-match-title" aria-describedby="job-match-copy">
+        <button class="job-match-modal__back" type="button" data-job-match-back aria-label="Go back">‹</button>
+        <button class="job-match-modal__skip" type="button" data-job-match-skip>Skip</button>
+        <div class="job-match-modal__content" data-job-match-step="choice">
+          <p class="eyebrow">Personalized Job Match</p>
+          <h2 id="job-match-title">Choose your path.</h2>
+          <p id="job-match-copy">Use your resume for a faster match, or answer a few questions manually.</p>
+          <div class="job-match-modal__choices" role="group" aria-label="Choose matching method">
+            <button class="btn btn--primary" type="button">Use My Resume</button>
+            <span>or</span>
+            <button class="btn btn--secondary" type="button" data-job-match-answer>Answer Questions</button>
+          </div>
+          <label class="checkbox-field job-match-modal__updates">
+            <input type="checkbox">
+            <span>Sign me up for company updates</span>
+          </label>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--login" data-job-match-step="login" hidden>
+          <p class="eyebrow">Save Your Progress</p>
+          <h2>Sign in to save your information for future visits.</h2>
+          <p>We take your privacy seriously. We never post anything to your social accounts.</p>
+          <div class="job-match-modal__social" aria-label="Sign in options">
+            <button type="button" data-job-match-interests aria-label="Continue with LinkedIn">in</button>
+            <button type="button" data-job-match-interests aria-label="Continue with Facebook">f</button>
+            <button type="button" data-job-match-interests aria-label="Continue with Google">G</button>
+          </div>
+          <button class="btn btn--secondary btn--small" type="button" data-job-match-interests>Skip for now</button>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--departments" data-job-match-step="departments" hidden>
+          <p class="eyebrow">Step 1 Of 5</p>
+          <h2>What are you interested in?</h2>
+          <p>Select one or more departments so we can recommend roles that fit your goals.</p>
+          <div class="job-match-modal__departments" role="group" aria-label="Departments of interest">
+            ${["Customer & Frontline", "Operations & Supply", "Care & Wellness", "Technology & Data", "Corporate & Shared Services", "People & HR", "Finance & Accounting", "Sales & Client Support", "Early Careers"].map((department) => `
+              <button type="button" aria-pressed="false" data-job-match-department>${department}</button>
+            `).join("")}
+          </div>
+          <button class="btn btn--primary job-match-modal__next" type="button" data-job-match-departments-next disabled>Next</button>
+          <div class="job-match-modal__progress" aria-label="Step 1 of 5">
+            <span><i></i></span>
+            <strong>Step 1 of 5</strong>
+          </div>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--title" data-job-match-step="job-title" hidden>
+          <p class="eyebrow">Step 2 Of 5</p>
+          <h2>What is your most recent job title?</h2>
+          <div class="job-match-modal__form">
+            <div class="field">
+              <label for="job-match-title-input">Your most recent job title</label>
+              <input id="job-match-title-input" type="text" placeholder="Your most recent job title" data-job-match-title-input>
+            </div>
+            <label class="checkbox-field job-match-modal__career-start">
+              <input type="checkbox" data-job-match-career-start>
+              <span>Just starting my career</span>
+            </label>
+          </div>
+          <button class="btn btn--primary job-match-modal__next" type="button" data-job-match-title-next disabled>Next</button>
+          <div class="job-match-modal__progress job-match-modal__progress--step-2" aria-label="Step 2 of 5">
+            <span><i></i></span>
+            <strong>Step 2 of 5</strong>
+          </div>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--skills" data-job-match-step="skills" hidden>
+          <p class="eyebrow">Step 3 Of 5</p>
+          <h2>Tell us what you’re really good at.</h2>
+          <div class="job-match-modal__form">
+            <div class="field">
+              <label for="job-match-skills-input">Your skills</label>
+              <div class="job-match-modal__skill-field">
+                <div class="job-match-modal__skill-input" data-job-match-skill-input aria-live="polite">
+                <div class="job-match-modal__skill-tags" data-job-match-skill-tags></div>
+                  <input id="job-match-skills-input" type="search" placeholder="Search skills" autocomplete="off" data-job-match-skill-search aria-controls="job-match-skills-list" aria-expanded="false">
+                </div>
+                <div class="job-match-modal__skill-dropdown" id="job-match-skills-list" data-job-match-skill-dropdown hidden></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn--primary job-match-modal__next" type="button" data-job-match-skills-next disabled>Next</button>
+          <div class="job-match-modal__progress job-match-modal__progress--step-3" aria-label="Step 3 of 5">
+            <span><i></i></span>
+            <strong>Step 3 of 5</strong>
+          </div>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--experience" data-job-match-step="experience" hidden>
+          <p class="eyebrow">Step 4 Of 5</p>
+          <h2>How experienced are you?</h2>
+          <div class="job-match-modal__experience" role="group" aria-label="Years of experience">
+            ${["0-3", "4-8", "9-14", "15+"].map((range) => `
+              <button type="button" aria-pressed="false" data-job-match-experience>
+                <strong>${range}</strong>
+                <span>Years</span>
+              </button>
+            `).join("")}
+          </div>
+          <button class="btn btn--primary job-match-modal__next" type="button" data-job-match-experience-next disabled>Next</button>
+          <div class="job-match-modal__progress job-match-modal__progress--step-4" aria-label="Step 4 of 5">
+            <span><i></i></span>
+            <strong>Step 4 of 5</strong>
+          </div>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--location" data-job-match-step="location" hidden>
+          <p class="eyebrow">Step 5 Of 5</p>
+          <h2>What is your preferred location?</h2>
+          <div class="job-match-modal__form">
+            <div class="field">
+              <label for="job-match-location-input">Your preferred work location</label>
+              <input id="job-match-location-input" type="text" placeholder="Your preferred work location" data-job-match-location-input>
+            </div>
+          </div>
+          <button class="btn btn--primary job-match-modal__next" type="button" data-job-match-location-next disabled>Next</button>
+          <div class="job-match-modal__progress job-match-modal__progress--step-5" aria-label="Step 5 of 5">
+            <span><i></i></span>
+            <strong>Step 5 of 5</strong>
+          </div>
+        </div>
+        <div class="job-match-modal__content job-match-modal__content--no-match" data-job-match-step="no-match" hidden>
+          <p class="eyebrow">No Matches Yet</p>
+          <h2>We do not have a perfect match right now.</h2>
+          <p>Share a few contact details or upload your resume, and our team can reach out when a role fits your profile.</p>
+          <div class="job-match-modal__form job-match-modal__lead-form">
+            <div class="field">
+              <label for="job-match-lead-email">Email <span aria-hidden="true">*</span></label>
+              <input id="job-match-lead-email" type="email" placeholder="Enter your email" autocomplete="email" data-job-match-lead-email required>
+            </div>
+            <div class="job-match-modal__lead-grid">
+              <div class="field">
+                <label for="job-match-lead-first-name">First name</label>
+                <input id="job-match-lead-first-name" type="text" placeholder="Enter your first name" autocomplete="given-name">
+              </div>
+              <div class="field">
+                <label for="job-match-lead-last-name">Last name</label>
+                <input id="job-match-lead-last-name" type="text" placeholder="Enter your last name" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="field">
+              <label for="job-match-lead-phone">Phone number</label>
+              <div class="job-match-modal__phone-row">
+                <select aria-label="Phone code">
+                  <option>Code</option>
+                  <option>+1</option>
+                  <option>+44</option>
+                  <option>+61</option>
+                  <option>+91</option>
+                </select>
+                <input id="job-match-lead-phone" type="tel" placeholder="Enter your phone number" autocomplete="tel">
+              </div>
+            </div>
+            <label class="btn btn--primary job-match-modal__resume-upload">
+              <input type="file" accept=".pdf,.doc,.docx" data-job-match-resume>
+              ${lucideIcon("upload")}
+              <span>Upload resume</span>
+            </label>
+          </div>
+          <div class="job-match-modal__footer-actions">
+            <button class="btn btn--primary job-match-modal__done" type="button" data-job-match-done disabled>Done</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+export function resumeMatchModal() {
+  return `
+    <div class="resume-match-modal" data-resume-match-modal hidden>
+      <div class="resume-match-modal__backdrop" data-resume-match-close></div>
+      <section class="resume-match-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="resume-match-modal-title" aria-describedby="resume-match-modal-copy">
+        <div class="resume-match-modal__header">
+          <h2 id="resume-match-modal-title">Find better job matches with your resume</h2>
+          <button class="resume-match-modal__close" type="button" data-resume-match-close aria-label="Close resume match">×</button>
+        </div>
+        <div class="resume-match-modal__body">
+          <p id="resume-match-modal-copy">Your resume helps us recommend jobs that match your skills and experience.</p>
+          <label class="resume-dropzone" for="resume-match-upload" data-resume-dropzone>
+            <input id="resume-match-upload" type="file" accept=".pdf,.doc,.docx,.txt" data-resume-match-file>
+            <span class="resume-dropzone__icon" aria-hidden="true">
+              ${lucideIcon("upload")}
+            </span>
+            <span class="resume-dropzone__main">Drop resume file here or <strong>select a file to upload</strong></span>
+            <span class="resume-dropzone__hint" data-resume-match-file-name>PDF, DOC, DOCX, and TXT files are supported, up to 1MB.</span>
+          </label>
+          <label class="checkbox-field resume-match-modal__consent">
+            <input type="checkbox" data-resume-match-consent>
+            <span>I have read and accept the <a href="pages/accessibility-help.html">privacy policy</a> and <a href="pages/accessibility-help.html">terms of use</a> <strong aria-hidden="true">*</strong></span>
+          </label>
+          <div class="resume-match-modal__actions">
+            <button class="btn btn--secondary" type="button" data-resume-match-close>Cancel</button>
+            <button class="btn btn--primary" type="button" data-resume-match-submit disabled>Get My Matches</button>
+          </div>
+        </div>
+      </section>
+    </div>
   `;
 }
 
@@ -287,13 +545,13 @@ export function sectionHeader(eyebrow, title, copy = "") {
   `;
 }
 
-export function simpleCard([title, copy, _meta, cta], iconText = "●") {
+export function simpleCard([title, copy, _meta, cta, href = "career-areas.html"], iconText = "●") {
   return `
     <article class="card">
       <div class="card__icon">${iconText}</div>
       <h3>${title}</h3>
       <p>${copy}</p>
-      ${cta ? `<a class="card__link" href="${pagePath("career-areas.html")}">${cta}<span aria-hidden="true">→</span></a>` : ""}
+      ${cta ? `<a class="card__link" href="${pagePath(href)}">${cta}<span aria-hidden="true">→</span></a>` : ""}
     </article>
   `;
 }

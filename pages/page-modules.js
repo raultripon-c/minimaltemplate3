@@ -1,44 +1,56 @@
 import { benefits, careerAreas, events, jobs, locations, stories } from "../data/site-data.js";
-import { accordion, badge, button, jobCard, jobsList, pageHero, sectionHeader, simpleCard } from "../components/common.js";
-import { benefitsWidget, careerAreasWidget, eventsWidget, growthWidget, locationsWidget, storiesWidget, talentCommunityWidget } from "../widgets/home-widgets.js";
+import { accordion, button, jobCard, jobsList, pageHero, sectionHeader, simpleCard } from "../components/common.js";
+import { benefitsWidget, careerAreasWidget, growthWidget, locationsWidget, storiesWidget, talentCommunityWidget } from "../widgets/home-widgets.js";
 
-const asset = (file) => `${window.location.pathname.includes("/pages/") ? "../" : ""}assets/illustrations/${file}`;
-const svgIcon = (paths) => `<svg viewBox="0 0 48 48" aria-hidden="true">${paths}</svg>`;
+const assetPrefix = () => {
+  if (!window.location.pathname.includes("/pages/")) return "";
+  const relativePath = window.location.pathname.split("/pages/")[1] || "";
+  const depth = relativePath.split("/").filter(Boolean).length - 1;
+  return depth > 0 ? `../${"../".repeat(depth)}` : "../";
+};
+const asset = (file) => `${assetPrefix()}assets/illustrations/${file}`;
+const pageHref = (file) => {
+  if (!window.location.pathname.includes("/pages/")) return `pages/${file}`;
+  const relativePath = window.location.pathname.split("/pages/")[1] || "";
+  const depth = relativePath.split("/").filter(Boolean).length - 1;
+  return `${depth > 0 ? "../".repeat(depth) : ""}${file}`;
+};
+const lucideIcon = (name) => `<i data-lucide="${name}" aria-hidden="true"></i>`;
 const pageIcons = {
-  culture: svgIcon(`<path d="M14 16h20M14 24h14M14 32h20"/><path d="M9 10h30v28H9V10Z"/>`),
-  curiosity: svgIcon(`<path d="M24 8v8M24 32v8M12.7 12.7l5.6 5.6M29.7 29.7l5.6 5.6M8 24h8M32 24h8M12.7 35.3l5.6-5.6M29.7 18.3l5.6-5.6"/>`),
-  care: svgIcon(`<path d="M24 38s-12-7-12-17a7 7 0 0 1 12-5 7 7 0 0 1 12 5c0 10-12 17-12 17Z"/>`),
-  voice: svgIcon(`<path d="M12 14h24v16H22l-7 6v-6h-3V14Z"/><path d="M18 21h12M18 26h8"/>`),
-  purpose: svgIcon(`<path d="M24 8v32M12 15h24l-4 7 4 7H12"/>`),
-  progress: svgIcon(`<path d="M11 34h26M15 30l7-7 5 5 9-12"/><path d="M31 16h5v5"/>`),
-  huddle: svgIcon(`<circle cx="17" cy="18" r="5"/><circle cx="31" cy="18" r="5"/><path d="M9 36c2-8 14-8 16 0M23 36c2-8 14-8 16 0"/>`),
-  mentorship: svgIcon(`<path d="M14 34c1-6 10-6 12 0M26 34c1-6 9-6 10 0"/><circle cx="20" cy="18" r="5"/><circle cx="31" cy="19" r="4"/><path d="M28 10l5 4 5-4"/>`),
-  collaboration: svgIcon(`<path d="M13 24h10l4 6h8M35 18H25l-4-6h-8"/><path d="m31 15 4 3-4 3M17 27l-4-3 4-3"/>`),
-  recognition: svgIcon(`<path d="M24 8 28 18l10 1-8 7 3 10-9-5-9 5 3-10-8-7 10-1 4-10Z"/>`),
-  learning: svgIcon(`<path d="M12 14h16c4 0 8 3 8 7v13H18c-3 0-6-3-6-6V14Z"/><path d="M18 20h12M18 26h10"/>`),
-  community: svgIcon(`<circle cx="24" cy="17" r="5"/><path d="M13 36c2-7 20-7 22 0"/><path d="M9 27c2-4 5-6 9-6M39 27c-2-4-5-6-9-6"/>`),
-  health: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 10-11 21-11 21S13 29 13 19c0-6 5-11 11-11Z"/><path d="M24 15v10M19 20h10"/>`),
-  time: svgIcon(`<circle cx="24" cy="24" r="14"/><path d="M24 15v10l7 4"/>`),
-  flexibility: svgIcon(`<path d="M11 24c5-8 12-8 17 0 3 5 6 5 9 0"/><path d="M13 32h22M18 14v20"/>`),
-  finance: svgIcon(`<path d="M13 17h22v18H13V17Z"/><path d="M18 17v-5h12v5M19 26h10M19 31h6"/>`),
-  family: svgIcon(`<circle cx="18" cy="18" r="5"/><circle cx="31" cy="20" r="4"/><path d="M9 36c2-8 16-8 18 0M26 36c1-5 9-5 11 0"/>`),
-  perks: svgIcon(`<path d="M14 20h20v18H14V20Z"/><path d="M24 20v18M12 20h24M18 20c-5-4-1-10 6 0M30 20c5-4 1-10-6 0"/>`),
-  internship: svgIcon(`<path d="M12 16h24v20H12V16Z"/><path d="M18 16v-4h12v4M18 24h12M18 30h8"/>`),
-  apprenticeship: svgIcon(`<path d="m14 31 12-12 5 5-12 12h-5v-5Z"/><path d="m28 17 3-3 5 5-3 3"/>`),
-  graduate: svgIcon(`<path d="M24 10 9 18l15 8 15-8-15-8Z"/><path d="M15 22v8c5 4 13 4 18 0v-8"/>`),
-  entry: svgIcon(`<path d="M13 36V12h14l8 8v16H13Z"/><path d="M27 12v8h8M18 28h12"/>`),
-  rotation: svgIcon(`<path d="M15 18a12 12 0 0 1 19-3l3 3"/><path d="M37 10v8h-8M33 30a12 12 0 0 1-19 3l-3-3"/><path d="M11 38v-8h8"/>`),
-  skill: svgIcon(`<path d="M14 33 33 14M18 14h16v16M13 20l5 5M23 30l5 5"/>`),
-  location: svgIcon(`<path d="M24 8c6 0 11 5 11 11 0 9-11 21-11 21S13 28 13 19c0-6 5-11 11-11Z"/><circle cx="24" cy="19" r="4"/>`),
-  remote: svgIcon(`<path d="M10 15h28v18H10V15Z"/><path d="M18 39h12M24 33v6"/><path d="M18 24h12"/>`),
-  frontline: svgIcon(`<path d="M16 33c0-6 16-6 16 0"/><circle cx="24" cy="18" r="6"/><path d="M9 35c1-5 5-8 10-8M39 35c-1-5-5-8-10-8"/>`),
-  corporate: svgIcon(`<path d="M15 17h18v19H15V17Z"/><path d="M20 17v-5h8v5M15 24h18M21 29h2M25 29h2"/>`),
-  technology: svgIcon(`<path d="m18 16-7 8 7 8M30 16l7 8-7 8M27 13l-6 22"/>`),
-  operations: svgIcon(`<path d="M10 18h12l4 6h12M10 30h10l4-6h14"/><path d="m34 15 4 3-4 3M34 27l4 3-4 3"/>`),
-  leadership: svgIcon(`<path d="M12 34c0-7 10-7 10 0M26 34c0-7 10-7 10 0"/><circle cx="17" cy="19" r="5"/><circle cx="31" cy="19" r="5"/><path d="M24 9v8M20 13h8"/>`),
-  growth: svgIcon(`<path d="M11 34h26M15 30l7-7 5 5 9-12"/><path d="M31 16h5v5"/>`),
-  belonging: svgIcon(`<circle cx="24" cy="16" r="6"/><path d="M13 37c2-8 20-8 22 0"/><path d="M9 27c2-4 5-6 9-6M39 27c-2-4-5-6-9-6"/>`),
-  early: svgIcon(`<path d="M12 14h16c4 0 8 3 8 7v13H18c-3 0-6-3-6-6V14Z"/><path d="M18 20h12M18 26h10M36 21l3-3 3 3"/>`)
+  culture: lucideIcon("book-open"),
+  curiosity: lucideIcon("sparkles"),
+  care: lucideIcon("heart-handshake"),
+  voice: lucideIcon("message-square"),
+  purpose: lucideIcon("flag"),
+  progress: lucideIcon("trending-up"),
+  huddle: lucideIcon("users-round"),
+  mentorship: lucideIcon("handshake"),
+  collaboration: lucideIcon("network"),
+  recognition: lucideIcon("award"),
+  learning: lucideIcon("book-open"),
+  community: lucideIcon("users"),
+  health: lucideIcon("heart-pulse"),
+  time: lucideIcon("clock"),
+  flexibility: lucideIcon("calendar-clock"),
+  finance: lucideIcon("circle-dollar-sign"),
+  family: lucideIcon("heart-handshake"),
+  perks: lucideIcon("gift"),
+  internship: lucideIcon("briefcase"),
+  apprenticeship: lucideIcon("wrench"),
+  graduate: lucideIcon("graduation-cap"),
+  entry: lucideIcon("file-text"),
+  rotation: lucideIcon("rotate-cw"),
+  skill: lucideIcon("wand-sparkles"),
+  location: lucideIcon("map-pin"),
+  remote: lucideIcon("monitor"),
+  frontline: lucideIcon("users"),
+  corporate: lucideIcon("briefcase"),
+  technology: lucideIcon("code-2"),
+  operations: lucideIcon("workflow"),
+  leadership: lucideIcon("crown"),
+  growth: lucideIcon("trending-up"),
+  belonging: lucideIcon("users-round"),
+  early: lucideIcon("graduation-cap")
 };
 const iconAt = (icons) => (_title, _copy, _meta, index) => icons[index] || icons[0];
 
@@ -52,12 +64,13 @@ const sectionIntro = (eyebrow, title, copy = "") => `
 
 const cardGrid = (items, icon = pageIcons.progress, className = "grid grid--3") => `
   <div class="${className}">
-    ${items.map(([title, copy, meta], index) => `
+    ${items.map(([title, copy, meta, cta = "", href = "career-areas.html"], index) => `
       <article class="card">
         <div class="card__icon">${typeof icon === "function" ? icon(title, copy, meta, index) : icon}</div>
         <h3>${title}</h3>
         ${meta ? `<p><strong>${meta}</strong></p>` : ""}
         <p>${copy}</p>
+        ${cta ? `<a class="card__link" href="${pageHref(href)}">${cta}<span aria-hidden="true">→</span></a>` : ""}
       </article>
     `).join("")}
   </div>
@@ -115,7 +128,6 @@ export function searchResultsPage() {
     ["Category", ["Frontline", "Corporate", "Technology", "Healthcare", "Operations", "Students"], false],
     ["Type", ["Full-Time", "Part-Time", "Remote", "Hybrid", "On-site"], false]
   ];
-  const matchSignals = ["Jobs that fit you", "Save time applying", "Match by interest"];
 
   return `
     <section class="page-hero page-hero--inverse search-hero">
@@ -163,12 +175,14 @@ export function searchResultsPage() {
               </fieldset>
             `).join("")}
           </section>
-          <section class="sidebar-match-card" aria-label="Personalized job match">
-            <h2>Discover roles that fit how you work.</h2>
-            <div class="sidebar-match-card__signals">
-              ${matchSignals.map((signal) => `<span>✓ ${signal}</span>`).join("")}
-            </div>
-            <button class="btn btn--secondary btn--small" type="button" data-job-match-open aria-haspopup="dialog">Start matching →</button>
+          <section class="sidebar-resume-match-card" aria-label="Resume job match">
+            <p class="eyebrow">Recommended</p>
+            <h2>Get matched by resume.</h2>
+            <p>Upload your resume and see roles that match your skills, experience, and next step.</p>
+            <button class="btn btn--secondary btn--small" type="button" data-resume-match-open aria-haspopup="dialog">
+              ${lucideIcon("upload")}
+              <span>Search with resume</span>
+            </button>
           </section>
         </aside>
         <section aria-live="polite">
@@ -185,10 +199,21 @@ export function searchResultsPage() {
             </label>
           </div>
           ${jobsList(jobs, true)}
-          <section class="section--tight related-paths-widget">
-            ${sectionHeader("Related Paths", "Keep exploring.", "Your experience may fit more than one kind of team.")}
-            <div class="grid grid--3">${careerAreas.slice(0, 3).map((area, index) => simpleCard([area[0], area[1], area[2], "See related jobs"], [pageIcons.frontline, pageIcons.corporate, pageIcons.technology][index])).join("")}</div>
-          </section>
+          <nav class="search-pagination" aria-label="Search results pages">
+            <a href="#" aria-label="Previous page"><span aria-hidden="true">‹</span></a>
+            <a href="#" aria-current="page">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <span aria-hidden="true">...</span>
+            <a href="#">8</a>
+            <a href="#" aria-label="Next page"><span aria-hidden="true">›</span></a>
+          </nav>
+        </section>
+      </div>
+      <div class="container">
+        <section class="section--tight related-paths-widget">
+          ${sectionHeader("Related Paths", "Keep exploring.", "Your experience may fit more than one kind of team.")}
+          <div class="grid grid--3">${careerAreas.slice(0, 3).map((area, index) => simpleCard([area[0], area[1], area[2], "See related jobs"], [pageIcons.frontline, pageIcons.corporate, pageIcons.technology][index])).join("")}</div>
         </section>
       </div>
     </main>
@@ -214,33 +239,59 @@ export function jobDescriptionPage() {
   ];
   const mustHave = ["Clear, patient communication.", "Reliable follow-through.", "Comfort learning basic digital tools."];
   const preferred = ["Service, support, operations, care, retail, hospitality, or community experience.", "Interest in coaching, process improvement, or leadership."];
-  const similarJobs = jobs.slice(1, 4);
+  const summaryTabs = ["Summary", "Responsibilities", "Education", "Skills"];
 
   return `
-    ${pageHero({
-      eyebrow: "Job Description",
-      title: job.title,
-      copy: `${job.department} · ${job.location} · ${job.schedule} · ${job.compensation}`,
-      action: button("Apply now →", "#apply", "secondary") + button("Save Job", "#", "ghost"),
-      theme: "inverse",
-      layout: "job-detail",
-      tags: job.tags
-    })}
     <main>
-      <section class="section">
-        <div class="container job-detail-layout">
-          <article class="job-detail-content">
+      <section class="job-detail-hero">
+        <div class="container job-detail-hero__grid">
+          <div class="job-detail-hero__content">
             <nav class="job-detail-breadcrumb" aria-label="Breadcrumb">
               <a href="search-results.html">Search Jobs</a>
               <span aria-hidden="true">/</span>
               <span>${job.title}</span>
             </nav>
-            <section class="job-detail-section">
-              <p class="eyebrow">Description</p>
-              <h2 class="phw-g-h2-dark">Know what you are stepping into.</h2>
+            <p class="eyebrow">Job Description</p>
+            <h1 class="phw-g-h1-primary">${job.title}</h1>
+            <div class="job-detail-hero__meta" aria-label="Job details">
+              <span>${lucideIcon("map-pin")}${job.location}</span>
+              <span>${lucideIcon("briefcase")}${job.department}</span>
+              <span>${lucideIcon("clock")}${job.schedule}</span>
+              <span>${lucideIcon("hash")}P-${job.id}</span>
+            </div>
+            <nav class="job-detail-tabs" aria-label="Job description sections">
+              ${summaryTabs.map((tab, index) => `<a href="#${tab.toLowerCase()}" ${index === 0 ? 'aria-current="page"' : ""}>${index === 0 ? lucideIcon("sparkles") : ""}${tab}</a>`).join("")}
+            </nav>
+            <p class="section-lede">${overview[0]}</p>
+          </div>
+          <figure class="job-detail-hero__media">
+            <img src="${asset("page-life-culture-team.png")}" alt="Team members collaborating in a bright workplace">
+            <button class="job-detail-hero__play" type="button" aria-label="Play team video">${lucideIcon("play")}</button>
+          </figure>
+        </div>
+      </section>
+      <section class="job-action-strip" aria-label="Job actions">
+        <div class="container job-action-strip__inner">
+          <div>
+            <span>${job.compensation}</span>
+            <strong>${job.workType} · ${job.shift}</strong>
+          </div>
+          <div class="job-action-strip__actions">
+            <button class="btn btn--ghost btn--small" type="button">${lucideIcon("share-2")} Share</button>
+            ${button("Apply Now", "#apply", "primary", "btn--small")}
+            <button class="btn btn--primary btn--small" type="button">${lucideIcon("heart")} Save job</button>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <article class="job-description-card" id="apply">
+            <section class="job-detail-section" id="summary">
+              <h2 class="phw-g-h2-dark">Job Description</h2>
+              <h3>Job Requirements</h3>
               ${overview.map((paragraph) => `<p>${paragraph}</p>`).join("")}
             </section>
-            <section class="job-detail-section">
+            <section class="job-detail-section" id="responsibilities">
               <h2>Responsibilities</h2>
               <ul>${responsibilities.map((item) => `<li>${item}</li>`).join("")}</ul>
             </section>
@@ -248,14 +299,14 @@ export function jobDescriptionPage() {
               <h2>Day in the life</h2>
               <ul>${dayRhythm.map(([title, copy]) => `<li><strong>${title}:</strong> ${copy}</li>`).join("")}</ul>
             </section>
-            <section class="job-detail-section">
+            <section class="job-detail-section" id="education">
               <h2>Qualifications</h2>
               <h3>Must have</h3>
               <ul>${mustHave.map((item) => `<li>${item}</li>`).join("")}</ul>
               <h3>Preferred</h3>
               <ul>${preferred.map((item) => `<li>${item}</li>`).join("")}</ul>
             </section>
-            <section class="job-detail-section">
+            <section class="job-detail-section" id="skills">
               <h2>Benefits and support</h2>
               <ul>${["Health, PTO, learning, and wellbeing support", "Clear onboarding and guided practice", "Team routines that make support easy to find", "Growth paths for future opportunities"].map((item) => `<li>${item}</li>`).join("")}</ul>
             </section>
@@ -265,49 +316,6 @@ export function jobDescriptionPage() {
               <ul>${stories.map((story) => `<li><strong>${story.name}, ${story.role}:</strong> “${story.quote}”</li>`).join("")}</ul>
             </section>
           </article>
-          <aside class="job-detail-sidebar" aria-label="Job actions and related jobs">
-            <section class="job-detail-widget job-alert-widget" id="apply">
-              <h2>Get similar roles by email.</h2>
-              <p>Stay close to new opportunities that match this path.</p>
-              <div class="field">
-                <label for="similar-role-email">Email address</label>
-                <input id="similar-role-email" type="email" autocomplete="email" placeholder="you@example.com">
-              </div>
-              ${button("Join Talent Community", "talent-community.html", "secondary", "btn--small")}
-            </section>
-            <section class="job-detail-widget">
-              <h2>Quick facts</h2>
-              <dl class="job-facts-list">
-                <div><dt>Department</dt><dd>${job.department}</dd></div>
-                <div><dt>Schedule</dt><dd>${job.schedule} · ${job.shift}</dd></div>
-                <div><dt>Location</dt><dd>${job.location} · ${job.workType}</dd></div>
-                <div><dt>Compensation</dt><dd>${job.compensation}</dd></div>
-              </dl>
-            </section>
-            <section class="job-detail-widget sidebar-match-card">
-              <h2>Discover roles that fit how you work.</h2>
-              <div class="sidebar-match-card__signals">
-                <span>✓ Match by interest</span>
-                <span>✓ Compare nearby roles</span>
-                <span>✓ Save time applying</span>
-              </div>
-              <button class="btn btn--secondary btn--small" type="button" data-job-match-open aria-haspopup="dialog">Start matching →</button>
-            </section>
-            <section class="job-detail-widget">
-              <h2>Similar jobs</h2>
-              <div class="similar-job-list">
-                ${similarJobs.map((item) => `
-                  <article class="similar-job-card">
-                    <p class="eyebrow">${item.department}</p>
-                    <h3><a href="job-description.html?job=${item.id}">${item.title}</a></h3>
-                    <p>${item.location} · ${item.schedule}</p>
-                    ${button("Apply now →", "job-description.html", "primary", "btn--small")}
-                  </article>
-                `).join("")}
-              </div>
-              <a class="card__link" href="search-results.html">View all jobs <span aria-hidden="true">→</span></a>
-            </section>
-          </aside>
         </div>
       </section>
     </main>
@@ -343,18 +351,17 @@ export function lifePage() {
       imageAlt: "Coworkers talking together in a warm modern workplace"
     })}
     <main>
-      <section class="section">
+      <section class="section" id="culture">
         <div class="container">
           ${sectionIntro("Culture Principles", "How we work together", "Culture is shaped by how teams communicate, support people, welcome ideas, and recognize progress.")}
           ${cardGrid(principles, iconAt([pageIcons.community, pageIcons.curiosity, pageIcons.care, pageIcons.voice, pageIcons.purpose, pageIcons.progress]))}
         </div>
       </section>
-      <section class="section section--inverse">
+      <section class="section section--inverse" id="stories">
         <div class="container page-story-feature">
           <div class="visual-panel"><img src="${asset("story-jordan-care-support.png")}" alt="Jordan, a team lead, in a bright workplace"></div>
           <article>
             <p class="eyebrow">Employee Story</p>
-            <h2>Real growth starts with feeling supported.</h2>
             <blockquote>“People made space for my ideas early. That trust gave me confidence to grow.”</blockquote>
             <p>Jordan joined for stability and room to learn. Supportive teammates helped Jordan grow into leadership.</p>
             <footer><strong>Jordan</strong><span>Team Lead</span></footer>
@@ -364,7 +371,7 @@ export function lifePage() {
       </section>
       <section class="section">
         <div class="container">
-          ${sectionIntro("Everyday Culture Grid", "Culture shows up in the everyday.")}
+          ${sectionIntro("Everyday Team Habits", "Culture shows up in the everyday.")}
           ${cardGrid(moments, iconAt([pageIcons.huddle, pageIcons.mentorship, pageIcons.collaboration, pageIcons.recognition, pageIcons.learning, pageIcons.community]))}
         </div>
       </section>
@@ -384,6 +391,64 @@ export function lifePage() {
         copy: "Explore opportunities shaped around purpose, growth, and the people who make work meaningful.",
         primary: button("Explore career areas", "career-areas.html", "primary"),
         secondary: button("Search jobs", "search-results.html", "secondary")
+      })}
+    </main>
+  `;
+}
+
+export function inclusionBelongingPage() {
+  const belonging = [
+    ["Respect in every interaction", "Teams are expected to communicate with care, clarity, and consistency."],
+    ["Accessible communication", "Information is easier to act on when expectations, steps, and support are clear."],
+    ["Supportive team norms", "Everyday habits help people ask questions, share context, and contribute with confidence."],
+    ["Space for different perspectives", "Better decisions come from listening to different experiences and ways of thinking."]
+  ];
+  const moments = [
+    ["Employee-led communities", "Spaces to connect, learn, and build relationships across teams."],
+    ["Mentorship conversations", "Guidance from people who understand the work and want others to grow."],
+    ["Recognition moments", "Progress, effort, and contribution are noticed in practical ways."],
+    ["Open feedback", "Teams improve when people can share ideas, questions, and concerns respectfully."]
+  ];
+
+  return `
+    ${pageHero({
+      eyebrow: "Inclusion & Belonging",
+      title: "A place to contribute, connect, and grow.",
+      copy: "Belonging is built through respect, clear communication, supportive teams, and stories that help people see themselves here.",
+      action: button("Explore open roles", "search-results.html", "primary") + button("Join talent community", "talent-community.html", "secondary"),
+      image: asset("page-life-culture-team.png"),
+      imageAlt: "Team members from diverse backgrounds collaborating in a bright workplace"
+    })}
+    <main>
+      <section class="section">
+        <div class="container">
+          ${sectionIntro("Belonging In Practice", "Support people can feel every day.", "Inclusion becomes real through how teams listen, communicate, recognize effort, and make space for different perspectives.")}
+          ${cardGrid(belonging, iconAt([pageIcons.care, pageIcons.voice, pageIcons.community, pageIcons.belonging]), "grid grid--4")}
+        </div>
+      </section>
+      <section class="section section--inverse">
+        <div class="container page-story-feature">
+          <div class="visual-panel"><img src="${asset("story-jordan-care-support.png")}" alt="Jordan, a team lead, in a bright workplace"></div>
+          <article>
+            <p class="eyebrow">Employee Story</p>
+            <blockquote>“People made space for my ideas early. That trust gave me confidence to grow.”</blockquote>
+            <p>Jordan joined for stability and room to learn. Supportive teammates helped Jordan grow into leadership.</p>
+            <footer><strong>Jordan</strong><span>Team Lead</span></footer>
+            ${button("Explore open roles", "search-results.html", "primary")}
+          </article>
+        </div>
+      </section>
+      <section class="section section--soft">
+        <div class="container">
+          ${sectionIntro("Everyday Signals", "What belonging can look like.", "Candidates should be able to see how support shows up before they apply.")}
+          ${cardGrid(moments, iconAt([pageIcons.community, pageIcons.mentorship, pageIcons.recognition, pageIcons.voice]), "grid grid--4")}
+        </div>
+      </section>
+      ${closingCta({
+        title: "Find a team where your perspective can matter.",
+        copy: "Explore opportunities shaped around purpose, support, and the people who make work meaningful.",
+        primary: button("Search jobs", "search-results.html", "primary"),
+        secondary: button("Explore Life & Culture", "life.html", "secondary")
       })}
     </main>
   `;
@@ -427,12 +492,12 @@ export function benefitsPage() {
     <main>
       <section class="section">
         <div class="container">
-          ${sectionIntro("Benefits Categories", "Support that meets people where they are.", "Different moments call for different support across life, work, family, and future goals.")}
+          ${sectionIntro("Support For Every Part Of Life", "Support that meets people where they are.", "Different moments call for different support across life, work, family, and future goals.")}
           ${cardGrid(benefitCards, iconAt([pageIcons.health, pageIcons.time, pageIcons.flexibility, pageIcons.finance, pageIcons.learning, pageIcons.family, pageIcons.recognition, pageIcons.perks]), "grid grid--4")}
         </div>
       </section>
       ${imageFeature({
-        eyebrow: "Wellbeing Feature",
+        eyebrow: "Wellbeing At Work",
         title: "Wellbeing is part of how work gets done.",
         copy: "Sustainable work starts with clear expectations, supportive teams, and space to recharge.",
         image: "page-wellbeing-team-support.png",
@@ -456,6 +521,7 @@ export function benefitsPage() {
           ${cardGrid(learning, iconAt([pageIcons.learning, pageIcons.mentorship, pageIcons.growth, pageIcons.leadership]), "grid grid--4")}
         </div>
       </section>
+      ${growthWidget()}
       <section class="section">
         <div class="container split-panel">
           <div>${sectionIntro("Benefits FAQ", "Answers to common benefits questions.")}</div>
@@ -520,9 +586,20 @@ export function earlyCareersPage() {
         </div>
       </section>
       <section class="section">
-        <div class="container split-panel">
-          <div>${sectionIntro("Program Journey Timeline", "What the journey can look like.")}</div>
-          <div class="timeline">${timeline.map(([title, copy]) => `<div class="timeline__item"><strong>${title}</strong><span>${copy}</span></div>`).join("")}</div>
+        <div class="container path-preview-layout">
+          <div class="path-preview-layout__intro">
+            <p class="eyebrow">Your First Steps</p>
+            <h2 class="phw-g-h2-dark">What the journey can look like.</h2>
+          </div>
+          <div class="path-preview-grid">
+            ${timeline.map(([title, copy]) => `
+              <article class="path-preview-card">
+                <span>${title}</span>
+                <h3>${title}</h3>
+                <p>${copy}</p>
+              </article>
+            `).join("")}
+          </div>
         </div>
       </section>
       <section class="section section--inverse">
@@ -530,7 +607,6 @@ export function earlyCareersPage() {
           <div class="visual-panel"><img src="${asset("page-story-maya-associate.png")}" alt="Maya, an associate, smiling in a bright workplace"></div>
           <article>
             <p class="eyebrow">Early Careers Story</p>
-            <h2>Maya found momentum through support.</h2>
             <blockquote>“I didn’t need to have everything figured out. What mattered was curiosity, effort, and the support to keep learning.”</blockquote>
             <p>Maya started with questions, not a fixed plan. Mentorship and real work helped Maya build confidence.</p>
             <footer><strong>Maya</strong><span>Associate</span></footer>
@@ -557,18 +633,16 @@ export function earlyCareersPage() {
   `;
 }
 
-export const eventsPage = () => `${pageHero({ eyebrow: "Events", title: "Meet the work before you decide.", copy: "Ask practical questions before applying." })}${eventsWidget()}`;
-
 export const talentCommunityPage = () => `${pageHero({ eyebrow: "Talent Community", title: "Stay connected without pressure.", copy: "Get updates by interest, location, and timing." })}${talentCommunityWidget()}`;
 
 export function locationsPage() {
   const regionCards = [
-    ["Central Region", "Explore workplace hubs with team-based and support roles."],
-    ["Coastal Region", "Find growing teams, flexible work models, and service roles."],
-    ["Northern Region", "Discover established teams, operations centers, and community-based work."],
-    ["Southern Region", "Explore roles shaped around service, collaboration, and local team support."],
-    ["Remote & Hybrid", "View opportunities with flexible work models where available."],
-    ["Emerging Locations", "Explore areas where teams are growing and new opportunities may become available."]
+    ["Central Region", "Explore workplace hubs with team-based and support roles.", "", "Explore region", "locations/north-region.html"],
+    ["Coastal Region", "Find growing teams, flexible work models, and service roles.", "", "Explore region", "locations/north-region.html"],
+    ["Northern Region", "Discover established teams, operations centers, and community-based work.", "", "Explore region", "locations/north-region.html"],
+    ["Southern Region", "Explore roles shaped around service, collaboration, and local team support.", "", "Explore region", "locations/north-region.html"],
+    ["Remote & Hybrid", "View opportunities with flexible work models where available.", "", "Explore region", "locations/north-region.html"],
+    ["Emerging Locations", "Explore areas where teams are growing and new opportunities may become available.", "", "Explore region", "locations/north-region.html"]
   ];
   const faq = [
     ["Can I filter by remote or hybrid roles?", "Yes. Use the work model filter to view remote, hybrid, or on-site opportunities where available."],
@@ -593,21 +667,19 @@ export function locationsPage() {
     })}
     <main>
       <section class="section" id="location-search">
-        <div class="container">
-          ${sectionIntro("Location Search", "Find opportunities near what matters most.")}
-          <form class="card page-location-search">
-            <div class="field"><label for="loc-keyword">Keyword</label><input id="loc-keyword" type="search" placeholder="Role, skill, or team"></div>
-            <div class="field"><label for="loc-region">Location or region</label><select id="loc-region"><option>Region A</option><option>Region B</option><option>Region C</option></select></div>
-            <div class="field"><label for="loc-distance">Distance or commute preference</label><select id="loc-distance"><option>Nearby</option><option>Flexible commute</option><option>Any distance</option></select></div>
-            <div class="field"><label for="loc-model">Work model</label><select id="loc-model"><option>Remote</option><option>Hybrid</option><option>On-site</option></select></div>
-            <div class="field"><label for="loc-area">Career area</label><select id="loc-area"><option>Customer & Frontline</option><option>Technology & Product</option><option>Operations & Logistics</option></select></div>
-            <button class="btn btn--primary" type="submit">Search locations</button>
-          </form>
+        <div class="container locations-map-widget">
+          <div class="locations-map-widget__header">
+            <h2>Our Locations</h2>
+            <p>Explore the regions where teams collaborate, support communities, and grow meaningful work.</p>
+          </div>
+          <div class="locations-map-widget__frame">
+            <div class="locations-map-widget__map" data-location-map aria-label="Interactive map of company locations"></div>
+          </div>
         </div>
       </section>
       <section class="section section--soft">
         <div class="container">
-          ${sectionIntro("Region Cards", "Explore by region or work style.")}
+          ${sectionIntro("Ways To Work Near You", "Explore by region or work style.")}
           ${cardGrid(regionCards, iconAt([pageIcons.location, pageIcons.location, pageIcons.location, pageIcons.location, pageIcons.remote, pageIcons.growth]))}
         </div>
       </section>
@@ -623,7 +695,7 @@ export function locationsPage() {
       </section>
       <section class="section section--soft">
         <div class="container">
-          ${sectionIntro("Featured Location Jobs", "Compare roles by region, schedule, and work model.")}
+          ${sectionIntro("Open Roles By Location", "Compare roles by region, schedule, and work model.")}
           ${jobsList(locationJobs, true)}
         </div>
       </section>
@@ -641,16 +713,84 @@ export function locationsPage() {
   `;
 }
 
+export function locationNorthRegionPage() {
+  const regionJobs = jobs.slice(0, 4).map((job, index) => ({
+    ...job,
+    location: ["North Region Hub", "North Region Service Center", "North Region Hybrid Team", "North Region Campus"][index] || "North Region"
+  }));
+  const workStyles = [
+    ["Frontline Teams", "People-facing roles with training and support."],
+    ["Hybrid Hubs", "Spaces for planning, coaching, and connection."],
+    ["Operations Support", "Coordinated work that keeps teams moving."],
+    ["Community-Based Work", "Local roles with practical impact."]
+  ];
+  const regionSignals = ["Hybrid and on-site teams", "Frontline and operations roles", "Practical onboarding support", "Team spaces for coaching and connection"];
+
+  return `
+    ${pageHero({
+      eyebrow: "North Region",
+      title: "Find your fit in the North Region.",
+      copy: "Explore local teams, schedules, and work settings with clear support.",
+      action: button("Search North Region roles", "../search-results.html", "primary") + button("Save location interest", "../talent-community.html", "secondary"),
+      image: asset("page-north-region-hero.png"),
+      imageAlt: "People collaborating in a bright North Region workplace hub"
+    })}
+    <main>
+      <section class="section">
+        <div class="container">
+          ${sectionIntro("Work Settings In The North Region", "Choose the environment that fits how you work.", "Find frontline, operations, hybrid, and support teams with practical guidance from day one.")}
+          ${cardGrid(workStyles, iconAt([pageIcons.frontline, pageIcons.remote, pageIcons.operations, pageIcons.community]), "grid grid--4")}
+        </div>
+      </section>
+      <section class="section section--inverse">
+        <div class="container split-panel">
+          <div>
+            <p class="eyebrow">Region Fit</p>
+            <h2 class="phw-g-h2-dark">Know what the location can support before you apply.</h2>
+            <p class="section-lede">Review work model, commute, schedule, and team support before you apply.</p>
+          </div>
+          <div class="page-check-list">${regionSignals.map((item) => `<span>✓ ${item}</span>`).join("")}</div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container page-image-feature page-image-feature--reverse">
+          <div>
+            <p class="eyebrow">Daily Experience</p>
+            <h2 class="phw-g-h2-dark">A connected hub for teams that support people.</h2>
+            <p class="section-lede">Expect clear routines, approachable leaders, shared spaces, and room to build confidence.</p>
+            ${button("View open roles", "../search-results.html", "primary")}
+          </div>
+          <div class="visual-panel">
+            <img src="${asset("page-north-region-team.png")}" alt="North Region team members reviewing work together in a bright workplace">
+          </div>
+        </div>
+      </section>
+      <section class="section section--soft">
+        <div class="container">
+          ${sectionIntro("Open Roles In The North Region", "Compare roles by team, schedule, and work model.")}
+          ${jobsList(regionJobs, true)}
+        </div>
+      </section>
+      ${closingCta({
+        title: "Interested in the North Region?",
+        copy: "Search current openings or save your interest for future location updates.",
+        primary: button("Search North Region jobs", "../search-results.html", "primary"),
+        secondary: button("Join talent community", "../talent-community.html", "secondary")
+      })}
+    </main>
+  `;
+}
+
 export function careerAreasPage() {
   const roleFamilies = [
-    ["Customer & Frontline Roles", "Work directly with people and make each interaction simple and supportive.", "Customer Support Associate, Service Specialist, Team Member"],
-    ["Operations & Logistics", "Keep work moving through planning, coordination, and reliable execution.", "Operations Coordinator, Fulfillment Associate, Logistics Specialist"],
-    ["Corporate & Business Functions", "Support the teams, systems, and strategies that help the organization grow.", "Finance Analyst, People Operations Partner, Marketing Coordinator"],
-    ["Technology & Product", "Build tools, improve experiences, and solve complex problems with technology and insight.", "Software Engineer, Product Designer, Data Analyst"],
-    ["Sales & Client Support", "Build relationships and connect people with the right solutions.", "Account Associate, Client Success Specialist, Sales Coordinator"],
-    ["Healthcare & Care Support", "Support care experiences with empathy, precision, and teamwork.", "Care Coordinator, Clinical Support Specialist, Patient Services Associate"],
-    ["Leadership", "Guide teams, coach others, and help people do meaningful work with clarity and confidence.", "Team Lead, Department Manager, Operations Leader"],
-    ["Early Careers", "Build practical skills and grow with support from experienced teams.", "Intern, Apprentice, Entry-Level Associate"]
+    ["Customer & Frontline Roles", "Work directly with people and make each interaction simple and supportive.", "Customer Support Associate, Service Specialist, Team Member", "Explore frontline work", "career-areas/frontline-workers.html"],
+    ["Operations & Logistics", "Keep work moving through planning, coordination, and reliable execution.", "Operations Coordinator, Fulfillment Associate, Logistics Specialist", "Preview this path", "career-areas/operations-logistics.html"],
+    ["Corporate & Business Functions", "Support the teams, systems, and strategies that help the organization grow.", "Finance Analyst, People Operations Partner, Marketing Coordinator", "Preview this path", "career-areas/corporate-shared-services.html"],
+    ["Technology & Product", "Build tools, improve experiences, and solve complex problems with technology and insight.", "Software Engineer, Product Designer, Data Analyst", "Preview this path", "career-areas/technology-product.html"],
+    ["Sales & Client Support", "Build relationships and connect people with the right solutions.", "Account Associate, Client Success Specialist, Sales Coordinator", "Preview this path", "career-areas/sales-client-support.html"],
+    ["Healthcare & Care Support", "Support care experiences with empathy, precision, and teamwork.", "Care Coordinator, Clinical Support Specialist, Patient Services Associate", "Preview this path", "career-areas/healthcare-care-support.html"],
+    ["Leadership", "Guide teams, coach others, and help people do meaningful work with clarity and confidence.", "Team Lead, Department Manager, Operations Leader", "Preview this path", "career-areas/leadership.html"],
+    ["Early Careers", "Build practical skills and grow with support from experienced teams.", "Intern, Apprentice, Entry-Level Associate", "Preview this path", "career-areas/early-careers.html"]
   ];
   const interests = ["Helping people", "Solving problems", "Leading teams", "Working with technology", "Organizing operations", "Creating experiences", "Supporting communities", "Learning something new"];
   const pathways = [
@@ -696,7 +836,7 @@ export function careerAreasPage() {
       </section>
       <section class="section section--soft">
         <div class="container">
-          ${sectionIntro("Featured Career Area Jobs", "Explore roles across different paths.")}
+          ${sectionIntro("Open Roles Across Career Areas", "Explore roles across different paths.")}
           ${jobsList(jobs, true)}
         </div>
       </section>
@@ -704,6 +844,95 @@ export function careerAreasPage() {
         title: "Your next step starts with the right path.",
         primary: button("Search jobs", "search-results.html", "primary"),
         secondary: button("Save your interests", "talent-community.html", "secondary")
+      })}
+    </main>
+  `;
+}
+
+export function careerAreaFrontlinePage() {
+  const frontlineJobs = jobs.filter((job) => job.category === "Frontline" || job.department.includes("Customer")).concat(jobs.slice(0, 2)).slice(0, 4);
+  const supportCards = [
+    ["Clear Training", "Start with practical guidance, simple expectations, and teammates who help you learn the flow."],
+    ["People-Focused Work", "Spend your day helping people feel informed, welcomed, and ready for the next step."],
+    ["Reliable Team Rhythm", "Work with clear handoffs, shared routines, and support when the day gets busy."],
+    ["Room To Grow", "Build confidence through coaching, skill practice, and paths into specialist or lead roles."]
+  ];
+  const dayInRole = [
+    ["Week 1", "Start with team routines, role basics, and the support available for the day."],
+    ["Month 1", "Help people move forward with coaching, clear handoffs, and practical feedback."],
+    ["Month 3", "Build confidence through stronger skills, better context, and trusted routines."],
+    ["Next Step", "Move toward specialist, coordinator, trainer, or lead opportunities."]
+  ];
+  const fitSignals = ["You enjoy helping people directly", "You like clear routines with human connection", "You want training before taking on more responsibility", "You value supportive teammates and visible impact"];
+
+  return `
+    ${pageHero({
+      eyebrow: "Career Area",
+      title: "Frontline workers help people feel supported from the first interaction.",
+      copy: "Explore service-focused roles with clear training, steady team support, and practical growth paths.",
+      action: button("Search frontline roles", "../search-results.html", "primary") + button("Join talent community", "../talent-community.html", "secondary"),
+      image: asset("career-hero-teamwork.png"),
+      imageAlt: "Frontline team members collaborating in a bright workplace"
+    })}
+    <main>
+      <section class="section">
+        <div class="container">
+          ${sectionIntro("Why Frontline Work Matters", "Create confidence in everyday moments.", "Frontline teams make work feel easier for candidates, customers, teammates, and communities through helpful, human support.")}
+          ${cardGrid(supportCards, iconAt([pageIcons.frontline, pageIcons.care, pageIcons.collaboration, pageIcons.growth]), "grid grid--4")}
+        </div>
+      </section>
+      <section class="section section--inverse">
+        <div class="container page-image-feature">
+          <div>
+            <p class="eyebrow">Day In The Role</p>
+            <h2 class="phw-g-h2-dark">You will have structure, support, and people to help.</h2>
+            <p class="section-lede">A good frontline experience balances clear expectations with the flexibility to respond to real people and real needs.</p>
+            ${button("View open roles", "../search-results.html", "primary")}
+          </div>
+          <div class="visual-panel">
+            <img src="${asset("page-life-culture-team.png")}" alt="Team members discussing priorities before a service shift">
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container path-preview-layout">
+          <div class="path-preview-layout__intro">
+            <p class="eyebrow">What The Path Can Look Like</p>
+            <h2 class="phw-g-h2-dark">Grow through skills, trust, and support.</h2>
+            <p class="section-lede">Frontline work can lead into specialist, coordinator, trainer, or leadership paths as confidence grows.</p>
+          </div>
+          <div class="path-preview-grid">
+            ${dayInRole.map(([title, copy]) => `
+              <article class="path-preview-card">
+                <span>${title}</span>
+                <h3>${title === "Next Step" ? "Move forward" : "Build confidence"}</h3>
+                <p>${copy}</p>
+              </article>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+      <section class="section section--soft">
+        <div class="container split-panel">
+          <div>
+            <p class="eyebrow">Good Fit Signals</p>
+            <h2 class="phw-g-h2-dark">This path may fit if you like useful, people-centered work.</h2>
+            <p class="section-lede">Use these signals to decide whether frontline work matches how you want to contribute.</p>
+          </div>
+          <div class="page-check-list">${fitSignals.map((item) => `<span>✓ ${item}</span>`).join("")}</div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          ${sectionIntro("Open Frontline Roles", "Compare roles with practical details.")}
+          ${jobsList(frontlineJobs, true)}
+        </div>
+      </section>
+      ${closingCta({
+        title: "Ready to explore frontline work?",
+        copy: "Search current openings or save your interest so relevant roles can come to you.",
+        primary: button("Search frontline jobs", "../search-results.html", "primary"),
+        secondary: button("Save your interest", "../talent-community.html", "secondary")
       })}
     </main>
   `;
@@ -720,6 +949,6 @@ export const accessibilityPage = () => `
 `;
 
 export const widgetPreviewPage = () => `
-  ${pageHero({ eyebrow: "Page Sections", title: "Explore reusable career site sections.", copy: "Review common sections for jobs, benefits, events, and talent community journeys." })}
-  ${careerAreasWidget()}${benefitsWidget()}${eventsWidget()}${talentCommunityWidget()}
+  ${pageHero({ eyebrow: "Career Site Highlights", title: "Explore ways to learn, compare, and connect.", copy: "Review paths for jobs, benefits, belonging, and talent community journeys." })}
+  ${careerAreasWidget()}${benefitsWidget()}${talentCommunityWidget()}
 `;
