@@ -424,6 +424,23 @@ export function resumeMatchModal() {
   `;
 }
 
+export function videoStoryModal() {
+  return `
+    <div class="video-story-modal" data-video-story-modal hidden>
+      <div class="video-story-modal__backdrop" data-video-story-close></div>
+      <section class="video-story-modal__dialog" role="dialog" aria-modal="true" aria-label="Video story">
+        <div class="video-story-modal__header">
+          <button class="video-story-modal__close" type="button" data-video-story-close aria-label="Close video">×</button>
+        </div>
+        <div class="video-story-modal__frame">
+          <img src="" alt="" data-video-story-image>
+          <span class="video-story-modal__play" aria-hidden="true">▶</span>
+        </div>
+      </section>
+    </div>
+  `;
+}
+
 export function pageHero({ eyebrow, title, copy, action = "", image = "", imageAlt = "", theme = "", layout = "", tags = [] }) {
   const themeClass = theme === "inverse" ? " page-hero--inverse" : "";
   const layoutClass = layout ? ` page-hero--${layout}` : "";

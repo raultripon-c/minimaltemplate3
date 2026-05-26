@@ -203,16 +203,8 @@
     justify-items: start;
   }
 
-  .evp-feature-card,
-  .evp-feature-card:nth-child(3n),
-  .evp-feature-card:nth-last-child(-n + 3) {
+  .evp-feature-card {
     min-height: 0;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  }
-
-  .evp-feature-card:last-child {
-    border-bottom: 0;
   }
 
   .career-area-row {

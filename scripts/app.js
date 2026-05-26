@@ -1,4 +1,4 @@
-import { header, footer, jobMatchModal, jobsList, resumeMatchModal } from "../components/common.js";
+import { header, footer, jobMatchModal, jobsList, resumeMatchModal, videoStoryModal } from "../components/common.js";
 import { jobs } from "../data/site-data.js";
 import { homeWidgets } from "../widgets/home-widgets.js";
 import {
@@ -56,7 +56,7 @@ function render() {
   const route = routes[normalizePath()] || routes["/"];
   const app = document.querySelector("#app");
   app.setAttribute("tabindex", "-1");
-  app.innerHTML = `${header(route.active)}${route.render()}${footer()}${jobMatchModal()}${resumeMatchModal()}`;
+  app.innerHTML = `${header(route.active)}${route.render()}${footer()}${jobMatchModal()}${resumeMatchModal()}${videoStoryModal()}`;
   bindInteractions();
 }
 
@@ -74,6 +74,7 @@ function bindInteractions() {
   bindSearchSidebar();
   bindJobMatchModal();
   bindResumeMatchModal();
+  bindVideoStoryModal();
   bindLocationsMap();
   renderLucideIcons();
 
@@ -276,6 +277,42 @@ function bindResumeMatchModal() {
   });
 }
 
+function bindVideoStoryModal() {
+  const modal = document.querySelector("[data-video-story-modal]");
+  if (!modal) return;
+
+  const openButtons = document.querySelectorAll(".video-story__placeholder");
+  const closeButtons = modal.querySelectorAll("[data-video-story-close]");
+  const image = modal.querySelector("[data-video-story-image]");
+  let previouslyFocused = null;
+
+  const openModal = (trigger) => {
+    const triggerImage = trigger.querySelector("img");
+    previouslyFocused = trigger;
+    if (image && triggerImage) {
+      image.src = triggerImage.currentSrc || triggerImage.src;
+      image.alt = triggerImage.alt || "";
+    }
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    modal.querySelector("[data-video-story-close]")?.focus();
+  };
+
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+    if (image) image.removeAttribute("src");
+    previouslyFocused?.focus();
+  };
+
+  openButtons.forEach((button) => button.addEventListener("click", () => openModal(button)));
+  closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+}
+
 function bindJobMatchModal() {
   const modal = document.querySelector("[data-job-match-modal]");
   if (!modal) return;
@@ -338,11 +375,10 @@ function bindJobMatchModal() {
       "job-title": "skills",
       skills: "experience",
       experience: "location",
-      location: "no-match",
     }[activeStep];
 
     if (!nextStep) {
-      closeModal();
+      completeMatchFlow();
       return;
     }
 
@@ -362,6 +398,15 @@ function bindJobMatchModal() {
     modal.hidden = true;
     document.body.classList.remove("modal-open");
     previouslyFocused?.focus();
+  };
+
+  const completeMatchFlow = () => {
+    closeModal();
+    const recommendations = document.querySelector("[data-match-recommendations]");
+    if (!recommendations) return;
+    recommendations.hidden = false;
+    recommendations.classList.add("is-visible");
+    recommendations.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   openButtons.forEach((button) => button.addEventListener("click", () => openModal(button)));
@@ -469,7 +514,7 @@ function bindJobMatchModal() {
   leadEmailInput?.addEventListener("input", () => {
     if (leadDoneButton) leadDoneButton.disabled = !leadEmailInput.value.trim();
   });
-  leadDoneButton?.addEventListener("click", closeModal);
+  leadDoneButton?.addEventListener("click", completeMatchFlow);
   backButton?.addEventListener("click", () => {
     if (activeStep === "no-match") {
       showStep("location");

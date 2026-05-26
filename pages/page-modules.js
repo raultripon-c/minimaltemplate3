@@ -16,6 +16,7 @@ const pageHref = (file) => {
   return `${depth > 0 ? "../".repeat(depth) : ""}${file}`;
 };
 const lucideIcon = (name) => `<i data-lucide="${name}" aria-hidden="true"></i>`;
+const viewAllJobsCta = (href = "search-results.html") => `<div class="job-list-footer">${button("View All", href, "primary")}</div>`;
 const pageIcons = {
   culture: lucideIcon("book-open"),
   curiosity: lucideIcon("sparkles"),
@@ -852,6 +853,13 @@ export function locationsPage() {
       </section>
       <section class="section section--soft">
         <div class="container">
+          ${sectionIntro("Open Roles By Location", "Compare roles by region, schedule, and work model.")}
+          ${jobsList(locationJobs, true)}
+          ${viewAllJobsCta("search-results.html")}
+        </div>
+      </section>
+      <section class="section section--soft">
+        <div class="container">
           ${sectionIntro("Ways To Work Near You", "Explore by region or work style.")}
           ${cardGrid(regionCards, iconAt([pageIcons.location, pageIcons.location, pageIcons.location, pageIcons.location, pageIcons.remote, pageIcons.growth]))}
         </div>
@@ -864,12 +872,6 @@ export function locationsPage() {
             <p class="section-lede">Review commute, schedule, work model, and team expectations before you apply.</p>
           </div>
           <div class="page-check-list">${["Filter by region or work model", "Understand schedule expectations", "Save location preferences", "Explore nearby opportunities"].map((item) => `<span>✓ ${item}</span>`).join("")}</div>
-        </div>
-      </section>
-      <section class="section section--soft">
-        <div class="container">
-          ${sectionIntro("Open Roles By Location", "Compare roles by region, schedule, and work model.")}
-          ${jobsList(locationJobs, true)}
         </div>
       </section>
       <section class="section">
@@ -931,6 +933,13 @@ export function locationNorthRegionPage() {
           <div class="page-check-list">${regionSignals.map((item) => `<span>✓ ${item}</span>`).join("")}</div>
         </div>
       </section>
+      <section class="section section--soft">
+        <div class="container">
+          ${sectionIntro("Open Roles In The North Region", "Compare roles by team, schedule, and work model.")}
+          ${jobsList(regionJobs, true)}
+          ${viewAllJobsCta("../search-results.html")}
+        </div>
+      </section>
       <section class="section">
         <div class="container page-image-feature page-image-feature--reverse">
           <div>
@@ -957,12 +966,6 @@ export function locationNorthRegionPage() {
               </figure>
             `).join("")}
           </div>
-        </div>
-      </section>
-      <section class="section section--soft">
-        <div class="container">
-          ${sectionIntro("Open Roles In The North Region", "Compare roles by team, schedule, and work model.")}
-          ${jobsList(regionJobs, true)}
         </div>
       </section>
       ${closingCta({
@@ -1008,6 +1011,13 @@ export function careerAreasPage() {
           ${cardGrid(roleFamilies, iconAt([pageIcons.frontline, pageIcons.operations, pageIcons.corporate, pageIcons.technology, pageIcons.community, pageIcons.health, pageIcons.leadership, pageIcons.early]), "grid grid--4")}
         </div>
       </section>
+      <section class="section section--soft">
+        <div class="container">
+          ${sectionIntro("Open Roles Across Career Areas", "Explore roles across different paths.")}
+          ${jobsList(jobs, true)}
+          ${viewAllJobsCta("search-results.html")}
+        </div>
+      </section>
       <section class="section section--inverse">
         <div class="container career-spotlight">
           ${sectionIntro("What we're currently looking for", "Not sure where to start?", "Choose what energizes you most, and explore role paths that align with your strengths.")}
@@ -1038,12 +1048,6 @@ export function careerAreasPage() {
             </div>
             ${button("Explore open roles", "search-results.html", "primary")}
           </div>
-        </div>
-      </section>
-      <section class="section section--soft">
-        <div class="container">
-          ${sectionIntro("Open Roles Across Career Areas", "Explore roles across different paths.")}
-          ${jobsList(jobs, true)}
         </div>
       </section>
       ${closingCta({
@@ -1125,6 +1129,13 @@ export function careerAreaFrontlinePage() {
           </div>
         </div>
       </section>
+      <section class="section">
+        <div class="container">
+          ${sectionIntro("Open Frontline Roles", "Compare current roles.")}
+          ${jobsList(frontlineJobs, true)}
+          ${viewAllJobsCta("../search-results.html")}
+        </div>
+      </section>
       <section class="section culture-gallery-section" aria-labelledby="frontline-gallery-title">
         <div class="container">
           <div class="culture-gallery__header">
@@ -1154,12 +1165,6 @@ export function careerAreaFrontlinePage() {
             <p class="section-lede">Look for signals that match how you like to work.</p>
           </div>
           <div class="page-check-list">${fitSignals.map((item) => `<span>✓ ${item}</span>`).join("")}</div>
-        </div>
-      </section>
-      <section class="section">
-        <div class="container">
-          ${sectionIntro("Open Frontline Roles", "Compare current roles.")}
-          ${jobsList(frontlineJobs, true)}
         </div>
       </section>
       ${closingCta({

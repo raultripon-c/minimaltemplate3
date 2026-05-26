@@ -101,6 +101,35 @@ export function featuredJobsWidget() {
   `;
 }
 
+export function matchedJobsWidget() {
+  const recommendationTabs = ["Browsing Based", "Recently Viewed", "New Opportunities", "Be the First"];
+  const recommendationTags = ["Browsing Based", "Recently Viewed", "New Opportunities", "Be the First", "Recently Viewed", "New Opportunities"];
+  const recommendations = jobs.map((job, index) => ({
+    ...job,
+    tags: [recommendationTags[index] || "Browsing Based", ...job.tags]
+  }));
+
+  return `
+    <section class="job-detail-recommendations" data-match-recommendations hidden aria-labelledby="matched-job-title">
+      <div class="job-detail-recommendations__inner">
+        <h2 id="matched-job-title" class="phw-g-h2-dark">Job Recommendations for You</h2>
+        <div data-filter-scope>
+          <div class="tabs" role="tablist" aria-label="Matched job recommendation filters">
+            ${recommendationTabs.map((tab, index) => `<button class="tab" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" data-tab-filter="${index === 0 ? "All" : tab}">${tab}</button>`).join("")}
+          </div>
+          <div class="job-detail-recommendations__grid">
+            ${recommendations.map((job, index) => jobCard(job, true).replace(
+              '<article class="job-card"',
+              `<article class="job-card" data-similar-job-card${index > 2 ? ' data-similar-extra="true" hidden' : ""}`
+            )).join("")}
+          </div>
+        </div>
+        <button class="btn btn--secondary" type="button" data-similar-jobs-more>View More</button>
+      </div>
+    </section>
+  `;
+}
+
 export function evpWidget() {
   const features = evpPillars.slice(0, 6);
   const evpIcons = [contentIcons.growth, contentIcons.purpose, contentIcons.flexibility, contentIcons.stability, contentIcons.wellbeing, contentIcons.belonging];
@@ -453,5 +482,6 @@ export const homeWidgets = [
   cultureWidget,
   featuredJobsWidget,
   jobMatchCtaWidget,
+  matchedJobsWidget,
   talentCommunityWidget
 ];
