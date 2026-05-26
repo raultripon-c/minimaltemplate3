@@ -9,16 +9,6 @@ const workingHereLinks = [
   ["Inclusion & Belonging", "inclusion-belonging.html"]
 ];
 
-const careerAreaLinks = [
-  ["All Career Areas", "career-areas.html"],
-  ["Frontline Workers", "career-areas/frontline-workers.html"]
-];
-
-const locationLinks = [
-  ["All Locations", "locations.html"],
-  ["North Region", "locations/north-region.html"]
-];
-
 function inPages() {
   return window.location.pathname.includes("/pages/");
 }
@@ -47,20 +37,6 @@ function normalizeHref(href) {
   return href;
 }
 
-function savedJobCount() {
-  try {
-    return JSON.parse(localStorage.getItem("career-template-saved") || "[]").length;
-  } catch {
-    return 0;
-  }
-}
-
-function savedJobsLabel(compact = false) {
-  const count = savedJobCount();
-  const countText = count > 0 ? ` (${count})` : "";
-  return compact && count > 0 ? `Saved <span class="utility-count">${count}</span>` : `♡ Saved Jobs${countText}`;
-}
-
 export function button(label, href = "#", variant = "primary", extra = "") {
   return `<a class="btn btn--${variant} ${extra}" href="${normalizeHref(href)}">${label}</a>`;
 }
@@ -72,22 +48,16 @@ export function badge(label, type = "") {
 export function header(active = "") {
   const prefix = rootPrefix();
   const primaryNav = navItems
-    .filter(([label]) => !["Working Here", "Career Areas", "Locations"].includes(label))
+    .filter(([label]) => !["Working Here", "Career Areas", "Locations", "Search Jobs"].includes(label))
     .map(([label, href]) => `<a class="primary-nav__link" href="${prefix}pages/${href}" ${active === href ? 'aria-current="page"' : ""}>${label}</a>`)
     .join("");
   const workingHereActive = ["life.html", "benefits.html", "inclusion-belonging.html"].includes(active);
   const careerAreasActive = active === "career-areas.html";
   const locationsActive = active === "locations.html";
+  const searchJobsActive = active === "search-results.html";
   const workingLinks = workingHereLinks
     .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
     .join("");
-  const careerLinks = careerAreaLinks
-    .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
-    .join("");
-  const locationNavLinks = locationLinks
-    .map(([label, href]) => `<a href="${prefix}pages/${href}">${label}</a>`)
-    .join("");
-  const utilitySavedHref = `${prefix}pages/saved-jobs.html`;
   const utilityLanguage = `
     <div class="utility-menu">
       <button class="utility-link utility-link--button" type="button" data-dropdown-trigger="language" aria-expanded="false" aria-controls="language-menu" aria-label="Choose language">
@@ -102,8 +72,8 @@ export function header(active = "") {
   `;
   const utilityLinks = `
     ${utilityLanguage}
-    <a class="utility-link" href="${utilitySavedHref}" data-saved-link>${savedJobsLabel()}</a>
-    <button class="btn btn--primary btn--small header-signin" type="button" aria-label="Sign in to candidate profile">Sign In</button>
+    <button class="btn btn--secondary btn--small header-signin" type="button" aria-label="Sign in to candidate profile">Sign In</button>
+    <a class="btn btn--primary btn--small header-search-jobs" href="${prefix}pages/search-results.html" ${searchJobsActive ? 'aria-current="page"' : ""}>Search Jobs</a>
   `;
 
   return `
@@ -122,30 +92,14 @@ export function header(active = "") {
               ${workingLinks}
             </div>
           </div>
-          <div class="nav-menu">
-            <button class="primary-nav__link primary-nav__button" type="button" data-dropdown-trigger="career-areas" aria-expanded="false" aria-controls="career-areas-menu" ${careerAreasActive ? 'aria-current="page"' : ""}>
-              Career Areas
-              <span class="nav-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="nav-dropdown" id="career-areas-menu" data-dropdown-menu="career-areas" hidden>
-              ${careerLinks}
-            </div>
-          </div>
-          <div class="nav-menu">
-            <button class="primary-nav__link primary-nav__button" type="button" data-dropdown-trigger="locations" aria-expanded="false" aria-controls="locations-menu" ${locationsActive ? 'aria-current="page"' : ""}>
-              Locations
-              <span class="nav-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="nav-dropdown" id="locations-menu" data-dropdown-menu="locations" hidden>
-              ${locationNavLinks}
-            </div>
-          </div>
+          <a class="primary-nav__link" href="${prefix}pages/career-areas.html" ${careerAreasActive ? 'aria-current="page"' : ""}>Career Areas</a>
+          <a class="primary-nav__link" href="${prefix}pages/locations.html" ${locationsActive ? 'aria-current="page"' : ""}>Locations</a>
           ${primaryNav}
         </nav>
         <div class="utility-nav" aria-label="Utility navigation">
           ${utilityLinks}
         </div>
-        <a class="mobile-search-link" href="${prefix}pages/search-results.html" aria-label="Search jobs">Search</a>
+        <a class="mobile-search-link" href="${prefix}pages/search-results.html" aria-label="Search jobs">Search Jobs</a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer">
           <span class="sr-only">Toggle navigation</span>
         </button>
@@ -158,22 +112,11 @@ export function header(active = "") {
           <div class="mobile-submenu" id="mobile-working-here" hidden>
             ${workingLinks}
           </div>
-          <button class="mobile-drawer__link mobile-drawer__button" type="button" data-mobile-submenu-trigger aria-expanded="false" aria-controls="mobile-career-areas">
-            Career Areas <span aria-hidden="true">⌄</span>
-          </button>
-          <div class="mobile-submenu" id="mobile-career-areas" hidden>
-            ${careerLinks}
-          </div>
-          <button class="mobile-drawer__link mobile-drawer__button" type="button" data-mobile-submenu-trigger aria-expanded="false" aria-controls="mobile-locations">
-            Locations <span aria-hidden="true">⌄</span>
-          </button>
-          <div class="mobile-submenu" id="mobile-locations" hidden>
-            ${locationNavLinks}
-          </div>
-          ${navItems.filter(([label]) => !["Working Here", "Career Areas", "Locations"].includes(label)).map(([label, href]) => `<a class="mobile-drawer__link" href="${prefix}pages/${href}">${label}</a>`).join("")}
+          <a class="mobile-drawer__link" href="${prefix}pages/career-areas.html">Career Areas</a>
+          <a class="mobile-drawer__link" href="${prefix}pages/locations.html">Locations</a>
+          ${navItems.filter(([label]) => !["Working Here", "Career Areas", "Locations", "Search Jobs"].includes(label)).map(([label, href]) => `<a class="mobile-drawer__link" href="${prefix}pages/${href}">${label}</a>`).join("")}
           <hr>
-          <a class="mobile-drawer__link" href="${utilitySavedHref}" data-saved-link data-saved-mobile>${savedJobsLabel(true)}</a>
-          <button class="btn btn--primary" type="button">Sign In</button>
+          <button class="btn btn--secondary" type="button">Sign In</button>
           <div class="mobile-language" aria-label="Language selector">
             <span>Language</span>
             <button type="button" class="utility-link utility-link--button is-active" aria-pressed="true">English</button>
