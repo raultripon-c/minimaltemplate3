@@ -100,8 +100,8 @@ export function header(active = "") {
           ${utilityLinks}
         </div>
         <a class="mobile-search-link" href="${prefix}pages/search-results.html" aria-label="Search jobs">Search Jobs</a>
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer">
-          <span class="sr-only">Toggle navigation</span>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer" aria-label="Toggle navigation">
+          <span class="menu-toggle__bar" aria-hidden="true"></span>
         </button>
       </div>
       <div class="mobile-drawer" id="mobile-drawer" hidden>
@@ -118,10 +118,14 @@ export function header(active = "") {
           <hr>
           <button class="btn btn--secondary" type="button">Sign In</button>
           <div class="mobile-language" aria-label="Language selector">
-            <span>Language</span>
-            <button type="button" class="utility-link utility-link--button is-active" aria-pressed="true">English</button>
-            <button type="button" class="utility-link utility-link--button">Spanish</button>
-            <button type="button" class="utility-link utility-link--button">French</button>
+            <button class="mobile-drawer__link mobile-drawer__button" type="button" data-mobile-submenu-trigger aria-expanded="false" aria-controls="mobile-language-menu">
+              Language <span aria-hidden="true">⌄</span>
+            </button>
+            <div class="mobile-submenu mobile-submenu--language" id="mobile-language-menu" hidden>
+              <button type="button" class="utility-link utility-link--button is-active" aria-pressed="true" data-mobile-language-option>English</button>
+              <button type="button" class="utility-link utility-link--button" data-mobile-language-option>Spanish</button>
+              <button type="button" class="utility-link utility-link--button" data-mobile-language-option>French</button>
+            </div>
           </div>
           <hr>
           ${button("Join Talent Community", "talent-community.html", "secondary")}

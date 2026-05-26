@@ -219,6 +219,7 @@
 
 .menu-toggle {
   display: none;
+  position: relative;
   width: 44px;
   height: 44px;
   border: 1px solid var(--stroke-primary);
@@ -301,47 +302,50 @@
 .mobile-language {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-2);
-  padding: 10px;
+  gap: 2px;
 }
 
-.mobile-language > span {
-  color: var(--secondary-text);
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.mobile-language .utility-link {
+.mobile-submenu--language .utility-link {
   justify-content: flex-start;
   width: 100%;
   border: 1px solid var(--stroke-neutral);
+  margin: 4px 0;
 }
 
-.menu-toggle span,
+.menu-toggle__bar,
 .menu-toggle::before,
 .menu-toggle::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: block;
   width: 18px;
   height: 2px;
-  margin: 4px auto;
   border-radius: 999px;
   background: currentColor;
   content: "";
+  transform: translate(-50%, -50%);
   transition: transform var(--transition), opacity var(--transition);
 }
 
-.drawer-open .menu-toggle span {
+.menu-toggle::before {
+  transform: translate(-50%, calc(-50% - 6px));
+}
+
+.menu-toggle::after {
+  transform: translate(-50%, calc(-50% + 6px));
+}
+
+.drawer-open .menu-toggle__bar {
   opacity: 0;
 }
 
 .drawer-open .menu-toggle::before {
-  transform: translateY(6px) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .drawer-open .menu-toggle::after {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .phw-btn,

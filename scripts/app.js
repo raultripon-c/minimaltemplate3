@@ -573,9 +573,9 @@ function bindHeaderMenus() {
     });
   });
 
-  document.querySelectorAll(".mobile-language button").forEach((button) => {
+  document.querySelectorAll("[data-mobile-language-option]").forEach((button) => {
     button.addEventListener("click", () => {
-      document.querySelectorAll(".mobile-language button").forEach((item) => {
+      document.querySelectorAll("[data-mobile-language-option]").forEach((item) => {
         item.classList.toggle("is-active", item === button);
         item.setAttribute("aria-pressed", String(item === button));
       });
